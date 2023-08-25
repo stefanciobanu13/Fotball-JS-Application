@@ -3,12 +3,10 @@ function addEventListenersInp(number) {
   const inputBtn = document.getElementById(`introdu${number}`);
   inputBtn.addEventListener("click", () => {
     addValueToList(number)
-    console.log("inside the add evs i=function")
   })
 }
 
 for (let i = 1; i < 8; i++) {
-  console.log("inside for")
   addEventListenersInp(i);
 }
 
@@ -435,7 +433,7 @@ table.addEventListener('click', function (event) {
 
 
 //screen the table data 
-const dataPlayer = [];
+export const dataPlayer = [];
 const getDataButton = document.getElementById('getDataButton');
 getDataButton.addEventListener('click', function () {
   const rows = table.getElementsByTagName('tr');
@@ -516,7 +514,6 @@ function removeDeleteButtons() {
 }
 
 function addValueToList(etapa) {
-  console.log("inside addvalue to tlist")
   var searchValue;
   switch (etapa) {
     case 1:
@@ -575,7 +572,6 @@ function addValueToList(etapa) {
 }
 
 function addValueToList2(etapa) {
-  console.log("inside addValueToList2")
 
   var searchValue;
   var selectElement;

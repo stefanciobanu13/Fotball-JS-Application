@@ -1,4 +1,4 @@
-import { postRound, postGame, postGoal, postTeam, postTeamPlayer } from "./postRequests.js";
+import { postRound, postGame, postGoal } from "./postRequests.js";
 
 const url = "http://localhost:8083/players";
 const selectPlayerBtn = document.getElementById("button_selectPlayer");
@@ -31,7 +31,7 @@ function getPlayers() {
  });
 }
 
-async function saveTheForm() {
+export async function saveTheForm() {
  postRound()
 
 }

@@ -1,4 +1,7 @@
 import { clasament } from "./script.js";
+import { saveTheForm } from "./app2.js";
+import { dataPlayer } from "./script.js";
+
 
 const url = "http://localhost:8083/"
 let roundNumber;
@@ -34,13 +37,14 @@ export const postRound = function postRound() {
   axios.post(`${url}rounds`, postData)
     .then(response => {
       console.log('Response:', response.data);
+
       // get back the round
       axios.get(`${url}rounds/number/${roundNumber}`)
         .then(response => {
           theRoundId = response.data.id;
           console.log('Response:', response.data);
         }).then(() => {
-          postTeam();
+          postTeams();
         })
         .catch(error => {
           console.error('Error:', error);
@@ -51,7 +55,8 @@ export const postRound = function postRound() {
     });
 };
 
-export function saveTeam(color) {
+export async function saveTeam(color) {
+
   const teamColor = color;
   let teamPoints;
   let teamGoalRate;
@@ -74,39 +79,216 @@ export function saveTeam(color) {
     });
 }
 
-function assignTeamsId() {
+async function getTeamsFromDb() {
+  try {
+    const response = await fetch(`${url}teams/roundNumber/${theRoundId}`);
+    const data = await response.json();
+    console.log(`inside getTeamFromDB ${data}`);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+
+async function assignTeamsId(color) {
+  let theTeamId;
+  let theTeamColor;
+  console.log(`ID of the ROUND: ${theRoundId}`);
+  axios.get(`http://localhost:8083/teams/fromRound?roundId=${theRoundId}&color=${color}`)
+    .then(response => {
+      // Handle the response here
+      console.log('Response of getTeamFromRound:', response.data);
+      theTeamId = response.data.id;
+      theTeamColor = response.data.color;
+      switch (color) {
+        case "Portocaliu":
+          teamOrangeId = theTeamId;
+          console.log(`the id of TeamOrange is ${teamOrangeId}`)
+          break;
+        case "Verde":
+          teamGreenId = theTeamId;
+          console.log(`the id of TeamGreen is ${teamGreenId}`)
+          break;
+        case "Albastru":
+          teamBlueId = theTeamId;
+          console.log(`the id of TeamBlue is ${teamBlueId}`)
+          break;
+        case "Gri":
+          teamGrayId = theTeamId;
+          console.log(`the id of TeamGray is ${teamGrayId}`)
+          break;
+      }
+    })
+    .catch(error => {
+      // Handle errors here
+      console.error('Error:', error);
+      assignTeamsId(color);
+    });
+}
+
+export async function postTeams() {
   const green = "Verde";
   const orange = "Portocaliu";
   const blue = "Albastru";
-  const gray = "Gri"
+  const gray = "Gri";
+  await saveTeam(orange);
+  await saveTeam(green);
+  await saveTeam(blue);
+  await saveTeam(gray);
+  await assignTeamsId(orange);
+  await assignTeamsId(green);
+  await assignTeamsId(gray);
+  await assignTeamsId(blue);
+  assignPlayerId();
+}
 
-  axios.get(`${url}teams/roundNumber/${roundNumber}`).then(response => {
-    console.log(response.data);
+function extractNames(fullName) {
+  const parts = fullName.split(/(?=[A-Z])/); // Split on uppercase letters
+  const firstName = parts[0];
+  const lastName = parts.slice(1).join(' ');
+  return {
+    firstName: firstName,
+    lastName: lastName
+  };
+}
+
+
+async function assignPlayerId() {
+  dataPlayer.forEach(async playerMap => {
+    const portocaliuName = playerMap['Portocaliu'];
+    const verdeName = playerMap['Verde'];
+    const albastruName = playerMap['Albastru'];
+    const griName = playerMap['Gri'];
+
+    if (portocaliuName) {
+      const names = extractNames(portocaliuName);
+      axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+        console.log(`${response}`);
+        const playerId = response.data.id;
+        console.log(`ID of the player is: ${playerId}`)
+        const color = "Portocaliu";
+        postTeamPlayer(playerId, color);
+      }).catch(error => {
+        // Handle errors here
+        axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+          console.log(`${response}`);
+          const playerId = response.data.id;
+          console.log(`ID of the player is: ${playerId}`)
+          const color = "Portocaliu";
+          postTeamPlayer(playerId, color);
+        })
+        console.error('Error:', error);
+      });
+    } else {
+      if (verdeName) {
+        const names = extractNames(verdeName);
+        axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+          console.log(`${response}`);
+          const playerId = response.data.id;
+          console.log(`ID of the player is: ${playerId}`)
+          const color = "Verde";
+          postTeamPlayer(playerId, color);
+        }).catch(error => {
+          // Handle errors here
+          axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+            console.log(`${response}`);
+            const playerId = response.data.id;
+            console.log(`ID of the player is: ${playerId}`)
+            const color = "Verde";
+            postTeamPlayer(playerId, color);
+          })
+          console.error('Error:', error);
+        });
+      } else {
+        if (albastruName) {
+          const names = extractNames(albastruName);
+          axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+            console.log(`${response}`);
+            const playerId = response.data.id;
+            console.log(`ID of the player is: ${playerId}`)
+            const color = "Albastru";
+            postTeamPlayer(playerId, color);
+          }).catch(error => {
+            // Handle errors here
+            axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+              console.log(`${response}`);
+              const playerId = response.data.id;
+              console.log(`ID of the player is: ${playerId}`)
+              const color = "Albastru";
+              postTeamPlayer(playerId, color);
+            })
+            console.error('Error:', error);
+          });
+        } else {
+          if (griName) {
+            const names = extractNames(griName);
+            axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+              console.log(`${response}`);
+              const playerId = response.data.id;
+              console.log(`ID of the player is: ${playerId}`)
+              const color = "Gri";
+              postTeamPlayer(playerId, color);
+            }).catch(error => {
+              // Handle errors here
+              axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
+                console.log(`${response}`);
+                const playerId = response.data.id;
+                console.log(`ID of the player is: ${playerId}`)
+                const color = "Gri";
+                postTeamPlayer(playerId, color);
+              })
+              console.error('Error:', error);
+            });
+          }
+        }
+      }
+    }
+  });
+}
+
+
+async function findThePlayerInDb(firstName, lastName) {
+  axios.get(`http://localhost:8083/players/name/?firstName=${firstName}&lastName=${lastName}`).then(response => {
+    console.log(`inside the findThePlayerInDb and the player id is ${response.data.id}`)
+  })
+}
+
+async function postTeamPlayer(thePlayerId, color) {
+  let theTeamId;
+  switch (color) {
+    case "Portocaliu": theTeamId = teamOrangeId;
+      console.log(`inside switch case 1, team id is ${theTeamId}`)
+      break;
+    case "Verde": theTeamId = teamGreenId;
+      console.log(`inside switch case 2, team id is ${theTeamId}`)
+      break;
+    case "Albastru": theTeamId = teamBlueId;
+      console.log(`inside switch case 3, team id is ${theTeamId}`)
+      break;
+    case "Gri": theTeamId = teamGrayId;
+      console.log(`inside switch case 4, team id is ${theTeamId}`)
+      break;
+  }
+  console.log(`inside postTeamPlayer and the id is ${theTeamId} on color ${color}`)
+  const teamPlayer = {
+    teamId: theTeamId,
+    playerId: thePlayerId
+  }
+  console.log(`ID of team Orange is= ${teamOrangeId}`);
+  console.log(`ID of team Green is= ${teamGreenId}`);
+  console.log(`ID of team Blue is= ${teamBlueId}`);
+  console.log(`ID of team Gray is= ${teamGrayId}`);
+
+  console.log(`before saving team-player, teamId is: ${theTeamId} and playerId is: ${thePlayerId}`)
+  axios.post(`${url}team-players`, teamPlayer).then(response => {
   })
     .catch(error => {
+      // Handle errors here
+      postTeamPlayer(thePlayerId, color)
       console.error('Error:', error);
     });
-
 }
 
-
-export const postTeam = function postTeams() {
-  const green = "Verde";
-  const orange = "Portocaliu";
-  const blue = "Albastru";
-  const gray = "Gri"
-  saveTeam(orange);
-  saveTeam(green);
-  saveTeam(blue);
-  saveTeam(gray);
-  assignTeamsId();
-}
-
-
-export const postTeamPlayer = function postTeamPlayer() {
-
-
-}
 
 export const postGame = function postGame() {
 
@@ -117,29 +299,3 @@ export const postGoal = function postGoal() {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
