@@ -103,19 +103,19 @@ async function assignTeamsId(color) {
       switch (color) {
         case "Portocaliu":
           teamOrangeId = theTeamId;
-          console.log(`the id of TeamOrange is ${teamOrangeId}`)
+          //    console.log(`the id of TeamOrange is ${teamOrangeId}`)
           break;
         case "Verde":
           teamGreenId = theTeamId;
-          console.log(`the id of TeamGreen is ${teamGreenId}`)
+          //    console.log(`the id of TeamGreen is ${teamGreenId}`)
           break;
         case "Albastru":
           teamBlueId = theTeamId;
-          console.log(`the id of TeamBlue is ${teamBlueId}`)
+          //  console.log(`the id of TeamBlue is ${teamBlueId}`)
           break;
         case "Gri":
           teamGrayId = theTeamId;
-          console.log(`the id of TeamGray is ${teamGrayId}`)
+          //   console.log(`the id of TeamGray is ${teamGrayId}`)
           break;
       }
     })
@@ -156,94 +156,48 @@ function extractNames(fullName) {
 async function assignPlayerId() {
   dataPlayer.forEach(async playerMap => {
     const portocaliuName = playerMap['Portocaliu'];
+    console.log(`the name of the player orange is ${portocaliuName}`)
     const verdeName = playerMap['Verde'];
+    console.log(`the name of the player green is ${verdeName}`)
     const albastruName = playerMap['Albastru'];
+    console.log(`the name of the player blue is ${albastruName}`)
     const griName = playerMap['Gri'];
+    console.log(`the name of the player grey is ${griName}`)
 
     if (portocaliuName) {
       const names = extractNames(portocaliuName);
-      axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-        console.log(`${response}`);
-        const playerId = response.data.id;
-        console.log(`ID of the player is: ${playerId}`)
-        const color = "Portocaliu";
-        postTeamPlayer(playerId, color);
-      }).catch(error => {
-        // Handle errors here
-        axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-          console.log(`${response}`);
-          const playerId = response.data.id;
-          console.log(`ID of the player is: ${playerId}`)
-          const color = "Portocaliu";
-          postTeamPlayer(playerId, color);
-        })
-        console.error('Error:', error);
-      });
-    } else {
-      if (verdeName) {
-        const names = extractNames(verdeName);
-        axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-          console.log(`${response}`);
-          const playerId = response.data.id;
-          console.log(`ID of the player is: ${playerId}`)
-          const color = "Verde";
-          postTeamPlayer(playerId, color);
-        }).catch(error => {
-          // Handle errors here
-          axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-            console.log(`${response}`);
-            const playerId = response.data.id;
-            console.log(`ID of the player is: ${playerId}`)
-            const color = "Verde";
-            postTeamPlayer(playerId, color);
-          })
-          console.error('Error:', error);
-        });
-      } else {
-        if (albastruName) {
-          const names = extractNames(albastruName);
-          axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-            console.log(`${response}`);
-            const playerId = response.data.id;
-            console.log(`ID of the player is: ${playerId}`)
-            const color = "Albastru";
-            postTeamPlayer(playerId, color);
-          }).catch(error => {
-            // Handle errors here
-            axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-              console.log(`${response}`);
-              const playerId = response.data.id;
-              console.log(`ID of the player is: ${playerId}`)
-              const color = "Albastru";
-              postTeamPlayer(playerId, color);
-            })
-            console.error('Error:', error);
-          });
-        } else {
-          if (griName) {
-            const names = extractNames(griName);
-            axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-              console.log(`${response}`);
-              const playerId = response.data.id;
-              console.log(`ID of the player is: ${playerId}`)
-              const color = "Gri";
-              postTeamPlayer(playerId, color);
-            }).catch(error => {
-              // Handle errors here
-              axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`).then(response => {
-                console.log(`${response}`);
-                const playerId = response.data.id;
-                console.log(`ID of the player is: ${playerId}`)
-                const color = "Gri";
-                postTeamPlayer(playerId, color);
-              })
-              console.error('Error:', error);
-            });
-          }
-        }
-      }
+      const color = "Portocaliu";
+      await getPlayerAndPost(names, color);
     }
-  });
+    if (verdeName) {
+      const names = extractNames(verdeName);
+      const color = "Verde";
+      await getPlayerAndPost(names, color);
+    }
+    if (albastruName) {
+      const names = extractNames(albastruName);
+      const color = "Albastru";
+      await getPlayerAndPost(names, color);
+    }
+    if (griName) {
+      const names = extractNames(griName);
+      const color = "Gri";
+      await getPlayerAndPost(names, color);
+    }
+  })
+};
+
+
+async function getPlayerAndPost(names, color) {
+  try {
+    const response = await axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`);
+    console.log(`${response}`);
+    const playerId = response.data.id;
+    console.log(`ID of the player is: ${playerId}`);
+    postTeamPlayer(playerId, color);
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 
