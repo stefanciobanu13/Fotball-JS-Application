@@ -39,7 +39,7 @@ submitButton.addEventListener("click", function () {
 
 
 // Function to measure the length of non-null <li> elements within a <ul> element
-function countNonNullLi(ulElement) {
+export function countNonNullLi(ulElement) {
   const liElements = ulElement.querySelectorAll('li');
   let count = 0;
 

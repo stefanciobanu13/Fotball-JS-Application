@@ -1,7 +1,7 @@
 import { clasament } from "./script.js";
 import { saveTheForm } from "./app2.js";
 import { dataPlayer } from "./script.js";
-
+import { countNonNullLi } from "./script.js";
 
 const url = "http://localhost:8083/"
 let roundNumber;
@@ -10,7 +10,6 @@ let teamOrangeId;
 let teamGreenId;
 let teamBlueId;
 let teamGrayId;
-
 
 function convertDateFormat(inputDate) {
   //convert the data format 
@@ -93,7 +92,6 @@ async function getTeamsFromDb() {
 async function assignTeamsId(color) {
   let theTeamId;
   let theTeamColor;
-  console.log(`ID of the ROUND: ${theRoundId}`);
   axios.get(`http://localhost:8083/teams/fromRound?roundId=${theRoundId}&color=${color}`)
     .then(response => {
       // Handle the response here
@@ -139,7 +137,8 @@ export async function postTeams() {
   await assignTeamsId(green);
   await assignTeamsId(gray);
   await assignTeamsId(blue);
-  assignPlayerId();
+  await assignPlayerId();
+  storeGame()
 }
 
 function extractNames(fullName) {
@@ -185,15 +184,16 @@ async function assignPlayerId() {
       await getPlayerAndPost(names, color);
     }
   })
+
 };
 
 
 async function getPlayerAndPost(names, color) {
   try {
     const response = await axios.get(`http://localhost:8083/players/name/?firstName=${names.firstName}&lastName=${names.lastName}`);
-    console.log(`${response}`);
+    // console.log(`${response}`);
     const playerId = response.data.id;
-    console.log(`ID of the player is: ${playerId}`);
+    // console.log(`ID of the player is: ${playerId}`);
     postTeamPlayer(playerId, color);
   } catch (error) {
     console.error('Error:', error);
@@ -211,29 +211,29 @@ async function postTeamPlayer(thePlayerId, color) {
   let theTeamId;
   switch (color) {
     case "Portocaliu": theTeamId = teamOrangeId;
-      console.log(`inside switch case 1, team id is ${theTeamId}`)
+      //  console.log(`inside switch case 1, team id is ${theTeamId}`)
       break;
     case "Verde": theTeamId = teamGreenId;
-      console.log(`inside switch case 2, team id is ${theTeamId}`)
+      //  console.log(`inside switch case 2, team id is ${theTeamId}`)
       break;
     case "Albastru": theTeamId = teamBlueId;
-      console.log(`inside switch case 3, team id is ${theTeamId}`)
+      //  console.log(`inside switch case 3, team id is ${theTeamId}`)
       break;
     case "Gri": theTeamId = teamGrayId;
-      console.log(`inside switch case 4, team id is ${theTeamId}`)
+      //  console.log(`inside switch case 4, team id is ${theTeamId}`)
       break;
   }
-  console.log(`inside postTeamPlayer and the id is ${theTeamId} on color ${color}`)
+  //console.log(`inside postTeamPlayer and the id is ${theTeamId} on color ${color}`)
   const teamPlayer = {
     teamId: theTeamId,
     playerId: thePlayerId
   }
-  console.log(`ID of team Orange is= ${teamOrangeId}`);
-  console.log(`ID of team Green is= ${teamGreenId}`);
-  console.log(`ID of team Blue is= ${teamBlueId}`);
-  console.log(`ID of team Gray is= ${teamGrayId}`);
+  // console.log(`ID of team Orange is= ${teamOrangeId}`);
+  // console.log(`ID of team Green is= ${teamGreenId}`);
+  // console.log(`ID of team Blue is= ${teamBlueId}`);
+  // console.log(`ID of team Gray is= ${teamGrayId}`);
 
-  console.log(`before saving team-player, teamId is: ${theTeamId} and playerId is: ${thePlayerId}`)
+  //console.log(`before saving team-player, teamId is: ${theTeamId} and playerId is: ${thePlayerId}`)
   axios.post(`${url}team-players`, teamPlayer).then(response => {
   })
     .catch(error => {
@@ -245,8 +245,117 @@ async function postTeamPlayer(thePlayerId, color) {
 
 
 export const postGame = function postGame() {
+  const games = document.getElementsByClassName('match');
+  const gamesArray = Array.from(games);
+  gamesArray.forEach(element => {
+    storeGame(element.id);
+  })
 
 
+}
+
+async function storeGame() {
+
+  const match = document.querySelectorAll('.match');
+  let leftTeamName;
+  let rightTeamName;
+  let gameNumber;
+  match.forEach(async matches => {
+    const leftTeamGoalsUl = matches.querySelector('.left-team-info ul');
+    const rightTeamGoalsUl = matches.querySelector('.right-team-info ul');
+    leftTeamName = matches.querySelector('.left-team-info .team-name').children[0].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+    rightTeamName = matches.querySelector('.right-team-info .team-name').children[0].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+    const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
+    const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
+    gameNumber = matches.id.slice(5);
+    console.log(`Match info: nr game = ${gameNumber}, leftTeamName = ${leftTeamName},rightTeamName= ${rightTeamName},leftTeamScore = ${leftTeamGoalsCount}, rightTeamScore = ${rightTeamGoalsCount}`)
+
+    await saveTheGame(gameNumber, leftTeamGoalsCount, rightTeamGoalsCount, leftTeamName, rightTeamName);
+
+  }, this);
+
+
+  const fmLeftTeamName = document.querySelector('#finala-mica .left-team-info .team-name');
+  const fmRightTeamName = document.querySelector('#finala-mica .right-team-info .team-name');
+  const fMLeftTeamName = document.querySelector('#finala-mare .left-team-info .team-name');
+  const fMRightTeamName = document.querySelector('#finala-mare .right-team-info .team-name');
+  const numberFm = 13;
+  const numberFM = 14;
+
+  const leftTeamFmScore = countNonNullLi(document.querySelector('#finala-mica .left-team-info ul'));
+  const rightTeamFmScore = countNonNullLi(document.querySelector('#finala-mica .right-team-info ul'));
+  const leftTeamFMScore = countNonNullLi(document.querySelector('#finala-mare .left-team-info ul'));
+  const rightTeamFMScore = countNonNullLi(document.querySelector('#finala-mare .right-team-info ul'));
+
+console.log(`the info of small final: team1Name = ${leftTeamName}, team2Name = ${rightTeamName}, `)
+
+  saveTheGame(numberFm, leftTeamFmScore, rightTeamFmScore, fmLeftTeamName, fmRightTeamName);
+  saveTheGame(numberFM, leftTeamFMScore, rightTeamFMScore, fMLeftTeamName, fMRightTeamName);
+
+}
+
+function saveSmallFinal(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName) {
+
+}
+
+function saveBigFinal(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName) {
+
+}
+
+async function saveTheGame(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName) {
+  console.log(`Inside the saveGameMethod: gameNr = ${gameNumber}, team1Score = ${team1Score},team2Score= ${team2Score},leftTeamName = ${leftTeamName}, rightTeamName = ${rightTeamName}`);
+  let team1Id;
+  let team2Id;
+
+  switch (leftTeamName) {
+    case "Portocaliu": team1Id = teamOrangeId;
+      console.log("inside first switch case  1")
+      console.log(`the ID OF ORANGE IS ${teamOrangeId}`)
+      console.log(`the ID OF GREEN IS ${teamGreenId}`)
+      console.log(`the ID OF BLUE IS ${teamBlueId}`)
+      console.log(`the ID OF GRAY IS ${teamGrayId}`)
+      break;
+    case "Verde": team1Id = teamGreenId;
+      console.log("inside first switch case  2")
+      console.log(`the ID OF ORANGE IS ${teamOrangeId}`)
+      console.log(`the ID OF GREEN IS ${teamGreenId}`)
+      console.log(`the ID OF BLUE IS ${teamBlueId}`)
+      console.log(`the ID OF GRAY IS ${teamGrayId}`)
+      break;
+    case "Albastru": team1Id = teamBlueId;
+      console.log("inside first switch case  3")
+      break;
+    case "Gri": team1Id = teamGrayId;
+      console.log("inside first switch case  4")
+      break;
+  }
+  switch (rightTeamName) {
+    case "Portocaliu": team2Id = teamOrangeId;
+      break;
+    case "Verde": team2Id = teamGreenId;
+      break;
+    case "Albastru": team2Id = teamBlueId;
+      break;
+    case "Gri": team2Id = teamGrayId;
+      break;
+  }
+
+  const postData = {
+    team1Id: team1Id,
+    team2Id: team2Id,
+    roundId: theRoundId,
+    team1Goals: team1Score,
+    team2Goals: team2Score,
+    number: gameNumber
+  }
+  console.log(`post data object ${postData.team1Goals} ${postData.team2Goals}, team1Id= ${postData.team1Id},team2Id =${postData.team2Id}, roundId= ${postData.roundId}, number= ${postData.number} `);
+
+  axios.post(`${url}games`, postData).then(response => {
+    console.log(`GAME number ${gameNumber} was saved with t1 score= ${postData.team1Goals} and t2score = ${postData.team2Goals}`)
+  }).catch(error => {
+    saveTheGame(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName);
+    console.error('Error:', error);
+  });
 }
 
 export const postGoal = function postGoal() {
