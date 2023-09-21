@@ -587,9 +587,44 @@ function addValueToList(etapa) {
           "#etapa" + etapa + " ul." + listClassName
         );
 
-        // lista are 5 elemente?
+        var matchInfo = document.querySelector(
+          "#etapa" + etapa + " .match-info"
+        );
+
+        var numeEchipaStanga =
+          matchInfo.children[0].children[0].textContent.replace(/\s+/g, "");
+        var numeEchipaDreapta =
+          matchInfo.children[2].children[0].textContent.replace(/\s+/g, "");
+        var echipaPlayer = key;
+
         var listItem = document.createElement("li");
         listItem.textContent = searchValue;
+
+        // verificam daca golul este autogol
+        // daca s-a dat vs echipei lui
+        if (numeEchipaStanga === echipaPlayer) {
+          // daca echipa din stanga e echipa jucatorului
+          // verificam daca golul s-a dat la echipa din dreapta
+
+          if (selectElement.value === numeEchipaDreapta) {
+            // atunci e clar ca e autogol
+            // logica de autogol
+
+            listItem.textContent = searchValue + " ( autogol ) ";
+            listItem.style.color = "red";
+          }
+        } else if (numeEchipaDreapta === echipaPlayer) {
+          // daca echipa din dreapta e echipa jucatorului
+          // verificam daca golul s-a dat la stanga din dreapta
+
+          if (selectElement.value === numeEchipaStanga) {
+            // atunci e clar ca e autogol
+            // logica de autogol
+
+            listItem.textContent = searchValue + " ( autogol ) ";
+            listItem.style.color = "red";
+          }
+        }
 
         // delete button
         const deleteIcon = document.createElement("i");
@@ -602,6 +637,7 @@ function addValueToList(etapa) {
         });
         listItem.appendChild(deleteIcon);
         list.appendChild(listItem);
+
         updateScoreMatch(etapa);
       }
     }
@@ -696,7 +732,9 @@ function updateScoreMatch(etapa) {
   }, this);
 
   removeTableRows("golgheteryBody");
+  removeTableRows("autogolgheteriBody");
   populateGolgheteryTable();
+  populateAutogolgheteriTable();
 }
 
 function clearTable() {
@@ -811,6 +849,35 @@ function addGoalScorerRows(names, finalGoals, total) {
   });
 }
 
+function addAutoGoalsScorers(names, total) {
+  const tableBody = document.getElementById("autogolgheteriBody");
+
+  tableBody.innerHTML = "";
+
+  // Map the names and total to include " (autogol)" for each name
+  const autoGoalsData = names.map((name, index) => ({
+    name: `${name}`,
+    total: total[index],
+  }));
+
+  // Filter out players with a total of 0
+  const filteredData = autoGoalsData.filter((data) => data.total > 0);
+
+  // Sort filtered data in descending order based on the 'total' value
+  const sortedData = filteredData.sort((a, b) => b.total - a.total);
+
+  // Loop through the sorted data and add rows to the table
+  sortedData.forEach((data, index) => {
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${data.name}</td>
+      <td>${data.total}</td>
+    `;
+    tableBody.appendChild(newRow);
+  });
+}
+
 function calculateTotalFinala(names) {
   const ulEchipaStangaFinalaMica = document.querySelector(
     "#finala-mica .left-team-info ul"
@@ -878,6 +945,40 @@ function calculateTotalEtapeFinala(names) {
   });
 
   const occurrencesVector = names.map((name) => nameOccurrences[name]);
+
+  return occurrencesVector;
+}
+
+function calculateAutogoals(names) {
+  const allLists = document.querySelectorAll(
+    ".list-Verde, .list-Portocaliu, .list-Albastru, .list-Gri"
+  );
+
+  const nameOccurrences = {};
+
+  // Initialize 0
+  names.forEach((name) => {
+    nameOccurrences[name] = 0;
+  });
+
+  // Count occurrences of names in the ul lists
+  allLists.forEach((ul) => {
+    const liElements = ul.querySelectorAll("li");
+    liElements.forEach((li) => {
+      const playerName = li.textContent.trim();
+      const cleanedPlayerName = playerName.replace("( autogol )", "").trim();      
+
+      // Check if the player name contains "autogol"
+      if (playerName.toLowerCase().includes("autogol")) {
+        if (nameOccurrences.hasOwnProperty(cleanedPlayerName)) {
+          nameOccurrences[cleanedPlayerName]++;
+        }
+      }
+    });
+  });
+
+  const occurrencesVector = names.map((name) => nameOccurrences[name]);
+
   return occurrencesVector;
 }
 
@@ -889,6 +990,7 @@ function createDataPlayerName() {
       data12.push(matchData[key]);
     }
   }
+
   return data12;
 }
 
@@ -896,6 +998,13 @@ function populateGolgheteryTable() {
   var dataPlayerName = createDataPlayerName();
   var dataPlayerFInala = calculateTotalFinala(dataPlayerName);
   var dataPlayerEtapeFinala = calculateTotalEtapeFinala(dataPlayerName);
-  //console.log(dataPlayerFInala,dataPlayerEtapeFinala);
+
   addGoalScorerRows(dataPlayerName, dataPlayerFInala, dataPlayerEtapeFinala);
+}
+
+function populateAutogolgheteriTable() {
+  var dataPlayerName = createDataPlayerName();
+  var dataPlayerEtapeFinala = calculateAutogoals(dataPlayerName);
+
+  addAutoGoalsScorers(dataPlayerName, dataPlayerEtapeFinala);
 }
