@@ -1,6 +1,6 @@
-import { clasament } from "./script.js";
+import { clasament } from "./clasament.js";
 import { dataPlayer } from "./script.js";
-import { countNonNullLi } from "./script.js";
+import { countNonNullLi } from "./helpers.js";
 
 const url = "http://localhost:8083/"
 let roundNumber;

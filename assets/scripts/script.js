@@ -1,352 +1,14 @@
-const table = document.getElementById("teams");
+import {
+  clasament,
+  sortClasament,
+  buildClasament,
+  updateClasament,
+} from "./clasament.js";
 
-function populateTable(value) {
-  const table = document.getElementById("teams");
-  const emptyPosition = findFirstEmptyPosition();
-
-  if (emptyPosition) {
-    const { row, column } = emptyPosition;
-    const cell = table.rows[row].cells[column];
-
-    const deleteIcon = document.createElement("i");
-    deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
-
-    cell.innerHTML = "";
-    cell.textContent = value;
-    cell.appendChild(deleteIcon);
-  }
-}
-
-const submitButton = document.getElementById("button_selectPlayer");
-submitButton.addEventListener("click", function () {
-  const input = document.getElementById("input_selectPlayer");
-  const selectedValue = input.value;
-  populateTable(selectedValue);
-});
-
-// Function to measure the length of non-null <li> elements within a <ul> element
-function countNonNullLi(ulElement) {
-  const liElements = ulElement.querySelectorAll("li");
-  let count = 0;
-
-  liElements.forEach((li) => {
-    if (li.textContent.trim() !== "") {
-      count++;
-    }
-  });
-
-  return count;
-}
-
-var clasament = [
-  {
-    culoare: "Verde",
-    meciuri_jucate: 0,
-    victorii: 0,
-    egaluri: 0,
-    infrangeri: 0,
-    goluri_date: 0,
-    goluri_primite: 0,
-    golaveraj: 0,
-    punctaj: 0,
-  },
-  {
-    culoare: `Portocaliu`,
-    meciuri_jucate: 0,
-    victorii: 0,
-    egaluri: 0,
-    infrangeri: 0,
-    goluri_date: 0,
-    goluri_primite: 0,
-    golaveraj: 0,
-    punctaj: 0,
-  },
-  {
-    culoare: `Albastru`,
-    meciuri_jucate: 0,
-    victorii: 0,
-    egaluri: 0,
-    infrangeri: 0,
-    goluri_date: 0,
-    goluri_primite: 0,
-    golaveraj: 0,
-    punctaj: 0,
-  },
-  {
-    culoare: `Gri`,
-    meciuri_jucate: 0,
-    victorii: 0,
-    egaluri: 0,
-    infrangeri: 0,
-    goluri_date: 0,
-    goluri_primite: 0,
-    golaveraj: 0,
-    punctaj: 0,
-  },
-];
-
-function getMatchInformations(match) {
-  leftTeamName = match.children[0].children[0].children[0].textContent.trim();
-  rightTeamName = match.children[0].children[2].children[0].textContent.trim();
-  score = match.children[0].children[1].textContent;
-
-  return [leftTeamName, rightTeamName, score];
-}
-
-function updateClasament(match) {
-  matchInformations = getMatchInformations(match);
-  leftTeamName = matchInformations[0];
-  rightTeamName = matchInformations[1];
-  score = matchInformations[2];
-
-  scoreInt = score.split("-");
-  leftTeamGoals = parseInt(scoreInt[0]);
-  rightTeamGoals = parseInt(scoreInt[1]);
-
-  leftTeam = getTeam(leftTeamName);
-  rightTeam = getTeam(rightTeamName);
-
-  result = leftTeamGoals - rightTeamGoals;
-
-  leftTeam.goluri_date += leftTeamGoals;
-  leftTeam.goluri_primite += rightTeamGoals;
-  leftTeam.golaveraj = leftTeam.goluri_date - leftTeam.goluri_primite;
-
-  rightTeam.goluri_date += rightTeamGoals;
-  rightTeam.goluri_primite += leftTeamGoals;
-  rightTeam.golaveraj = rightTeam.goluri_date - rightTeam.goluri_primite;
-
-  if (result == 0) {
-    leftTeam.egaluri++;
-    rightTeam.egaluri++;
-    leftTeam.punctaj++;
-    rightTeam.punctaj++;
-  } else if (result < 0) {
-    leftTeam.infrangeri++;
-    rightTeam.victorii++;
-    rightTeam.punctaj += 3;
-  } else {
-    leftTeam.victorii++;
-    rightTeam.infrangeri++;
-    leftTeam.punctaj += 3;
-  }
-
-  leftTeam.meciuri_jucate++;
-  rightTeam.meciuri_jucate++;
-}
-
-const matches = document.querySelectorAll(".match");
-matches.forEach((match) => {
-  const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
-  const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
-
-  const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
-  const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
-
-  const scoreElement = match.querySelector(".scor");
-  scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
-  updateClasament(match);
-}, this);
-
-var clasamentSelectiv = [
-  { culoare: "Verde", vs_Portocaliu: 0, vs_Albastru: 0, vs_Gri: 0 },
-  { culoare: "Portocaliu", vs_Verde: 0, vs_Albastru: 0, vs_Gri: 0 },
-  { culoare: "Gri", vs_Portocaliu: 0, vs_Albastru: 0, vs_Verde: 0 },
-  { culoare: "Albastru", vs_Portocaliu: 0, vs_Verde: 0, vs_Gri: 0 },
-];
-
-// this function get better team from tur and retur
-function getBetterTeamByDirectMatch(team1, team2) {
-  const matches = document.querySelectorAll(".match");
-  matches.forEach((match) => {
-    const matchInformations = getMatchInformations(match);
-    const leftTeamName = matchInformations[0];
-    const rightTeamName = matchInformations[1];
-    const score = matchInformations[2];
-
-    const scoreInt = score.split("-");
-    const leftTeamGoals = parseInt(scoreInt[0]);
-    const rightTeamGoals = parseInt(scoreInt[1]);
-
-    const leftTeam = clasamentSelectiv.find(
-      (team) => team.culoare === leftTeamName
-    );
-    const rightTeam = clasamentSelectiv.find(
-      (team) => team.culoare === rightTeamName
-    );
-
-    if (leftTeam && rightTeam) {
-      leftTeam[`vs_${rightTeamName}`] += leftTeamGoals - rightTeamGoals;
-      rightTeam[`vs_${leftTeamName}`] += rightTeamGoals - leftTeamGoals;
-    }
-  }, this);
-
-  const leftTeam = clasamentSelectiv.find(
-    (team) => team.culoare === leftTeamName
-  );
-  const rightTeam = clasamentSelectiv.find(
-    (team) => team.culoare === rightTeamName
-  );
-
-  if (leftTeam && rightTeam) {
-    if (leftTeam[`vs_${rightTeamName}`] > rightTeam[`vs_${leftTeamName}`]) {
-      return -1;
-    } else if (
-      leftTeam[`vs_${rightTeamName}`] < rightTeam[`vs_${leftTeamName}`]
-    ) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-}
-
-function getTeam(color) {
-  for (var i = 0; i < clasament.length; i++) {
-    if (clasament[i].culoare == color) {
-      return clasament[i];
-    }
-  }
-}
-
-function buildClasament(data) {
-  var table = document.getElementById("clasamentBody");
-
-  for (var i = 0; i < data.length; i++) {
-    var row = `<tr>
-                    <td>${i + 1}</td>
-                    <td>${data[i].culoare}</td>
-                    <td>${data[i].victorii}</td>
-                    <td>${data[i].egaluri}</td>
-                    <td>${data[i].infrangeri}</td>
-                    <td>${data[i].goluri_date}</td>
-                    <td>${data[i].goluri_primite}</td>
-                    <td>${data[i].golaveraj}</td>
-                    <td>${data[i].punctaj}</td>
-                </tr>`;
-    table.innerHTML += row;
-  }
-}
-var marcatori = [];
-
-function buildGolgheteri() {
-  var table = document.getElementById("golgheteryBody");
-  const players = document.querySelectorAll("li");
-
-  players.forEach((player) => {
-    if (player.textContent != "") {
-      marcatori.push(player.textContent);
-    }
-  });
-
-  // reduce the array to unique values
-  marcatoriUnici = marcatori.reduce(function (a, b) {
-    if (a.indexOf(b) < 0) a.push(b);
-    return a;
-  }, []);
-
-  var marcatoriFinalaArray = [];
-
-  const marcatoriFinala = document.querySelectorAll(".finala li");
-  marcatoriFinala.forEach((marcator) => {
-    if (marcator.textContent != "") {
-      marcatoriFinalaArray.push(marcator.textContent);
-    }
-  });
-
-  marcatoriUnici
-    .sort(function (marcator1, marcator2) {
-      if (
-        marcatori.filter((marcator) => marcator == marcator1).length ==
-        marcatori.filter((marcator) => marcator == marcator2).length
-      ) {
-        if (
-          marcatoriFinalaArray.filter((marcator3) => marcator3 == marcator1)
-            .length ==
-          marcatoriFinalaArray.filter((marcator3) => marcator3 == marcator2)
-            .length
-        ) {
-          return 0;
-        } else if (
-          marcatoriFinalaArray.filter((marcator3) => marcator3 == marcator1)
-            .length >
-          marcatoriFinalaArray.filter((marcator3) => marcator2 == marcator2)
-            .length
-        ) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else if (
-        marcatori.filter((marcator) => marcator == marcator1).length >
-        marcatori.filter((marcator) => marcator == marcator2).length
-      ) {
-        return -1;
-      } else {
-        return 1;
-      }
-    })
-    .forEach((marcator, index) => {
-      var row = `<tr>
-                    <td>${index + 1}</td>
-                    <td>${marcator}</td>
-                    <td>${
-                      marcatoriFinalaArray.filter(
-                        (marcator2) => marcator2 == marcator
-                      ).length
-                    }</td>
-                    <td>${
-                      marcatori.filter((marcator2) => marcator2 == marcator)
-                        .length
-                    }</td></td>
-                </tr>`;
-      table.innerHTML += row;
-    }, this);
-}
-
-// sort the clasament array by points
-function sortClasament() {
-  clasament.sort(function (team1, team2) {
-    if (team1.punctaj == team2.punctaj) {
-      //console.log(team1,team2,getBetterTeamByDirectMatch(team1,team2));
-
-      if (getBetterTeamByDirectMatch(team1, team2) == 0) {
-        if (team1.golaveraj == team2.golaveraj) {
-          if (team1.goluri_date == team2.goluri_date) {
-            // change table loc with the name PENALTY
-            var clasament1 = document.getElementById("clasamentBody");
-            var rows = clasament1.querySelectorAll("tr");
-            rows.forEach((row) => {
-              const teamName = row.children[1].textContent.trim();
-              if (teamName === team1.culoare) {
-                row.children[0].textContent = "PENALTY";
-                row.children[0].style.color = "red";
-              } else if (teamName === team2.culoare) {
-                row.children[0].textContent = "PENALTY";
-                row.children[0].style.color = "red";
-              }
-            }, this);
-            return 0;
-          } else if (team1.goluri_date > team2.goluri_date) {
-            return -1;
-          } else {
-            return 1;
-          }
-        } else if (team1.golaveraj > team2.golaveraj) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else {
-        return getBetterTeamByDirectMatch(team1, team2);
-      }
-    } else if (team1.punctaj > team2.punctaj) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
-}
+import {countNonNullLi, removeDeleteButtons} from "./helpers.js";
+import {} from "./golgheteri.js";
+import {table} from "./table.js";
+import {} from "./match.js";
 
 sortClasament();
 buildClasament(clasament);
@@ -357,53 +19,53 @@ function addFinalsTeam(clasament) {
   var finalaMica = document.getElementById("finala-mica");
   var finalaMare = document.getElementById("finala-mare");
 
-  echipaStangaFinalaMica = finalaMica.children[0].children[0].children[0];
+  const echipaStangaFinalaMica = finalaMica.children[0].children[0].children[0];
 
-  echipaDreaptaFinalaMica = finalaMica.children[0].children[2].children[0];
+  const echipaDreaptaFinalaMica = finalaMica.children[0].children[2].children[0];
 
-  echipaStangaFinalaMare = finalaMare.children[0].children[0].children[0];
-  echipaDreaptaFinalaMare = finalaMare.children[0].children[2].children[0];
+  const echipaStangaFinalaMare = finalaMare.children[0].children[0].children[0];
+  const echipaDreaptaFinalaMare = finalaMare.children[0].children[2].children[0];
 
-  numeEchipaStangaFinalaMica = document.createElement("div");
+  const numeEchipaStangaFinalaMica = document.createElement("div");
   numeEchipaStangaFinalaMica.classList.add(clasament[2].culoare);
   numeEchipaStangaFinalaMica.textContent = clasament[2].culoare;
   echipaStangaFinalaMica.appendChild(numeEchipaStangaFinalaMica);
 
-  numeEchipaDreaptaFinalaMica = document.createElement("div");
+  const numeEchipaDreaptaFinalaMica = document.createElement("div");
   numeEchipaDreaptaFinalaMica.classList.add(clasament[3].culoare);
   numeEchipaDreaptaFinalaMica.textContent = clasament[3].culoare;
   echipaDreaptaFinalaMica.appendChild(numeEchipaDreaptaFinalaMica);
 
-  numeEchipaStangaFinalaMare = document.createElement("div");
+  const numeEchipaStangaFinalaMare = document.createElement("div");
   numeEchipaStangaFinalaMare.classList.add(clasament[0].culoare);
   numeEchipaStangaFinalaMare.textContent = clasament[0].culoare;
   echipaStangaFinalaMare.appendChild(numeEchipaStangaFinalaMare);
 
-  numeEchipaDreaptaFinalaMare = document.createElement("div");
+  const numeEchipaDreaptaFinalaMare = document.createElement("div");
   numeEchipaDreaptaFinalaMare.classList.add(clasament[1].culoare);
   numeEchipaDreaptaFinalaMare.textContent = clasament[1].culoare;
   echipaDreaptaFinalaMare.appendChild(numeEchipaDreaptaFinalaMare);
 
   // lista ul pentru echipa stânga în finala mică
-  ulEchipaStangaFinalaMica = document.createElement("ul");
+  const ulEchipaStangaFinalaMica = document.createElement("ul");
   ulEchipaStangaFinalaMica.id = "marcatori-stanga";
   ulEchipaStangaFinalaMica.classList.add("list-" + clasament[2].culoare);
   echipaStangaFinalaMica.appendChild(ulEchipaStangaFinalaMica);
 
   // lista ul pentru echipa dreapta în finala mică
-  ulEchipaDreaptaFinalaMica = document.createElement("ul");
+  const ulEchipaDreaptaFinalaMica = document.createElement("ul");
   ulEchipaDreaptaFinalaMica.id = "marcatori-dreapta";
   ulEchipaDreaptaFinalaMica.classList.add("list-" + clasament[3].culoare);
   echipaDreaptaFinalaMica.appendChild(ulEchipaDreaptaFinalaMica);
 
   // lista ul pentru echipa stânga în finala mare
-  ulEchipaStangaFinalaMare = document.createElement("ul");
+  const ulEchipaStangaFinalaMare = document.createElement("ul");
   ulEchipaStangaFinalaMare.id = "marcatori-stanga";
   ulEchipaStangaFinalaMare.classList.add("list-" + clasament[0].culoare);
   echipaStangaFinalaMare.appendChild(ulEchipaStangaFinalaMare);
 
   // lista ul pentru echipa dreapta în finala mare
-  ulEchipaDreaptaFinalaMare = document.createElement("ul");
+  const ulEchipaDreaptaFinalaMare = document.createElement("ul");
   ulEchipaDreaptaFinalaMare.id = "marcatori-dreapta";
   ulEchipaDreaptaFinalaMare.classList.add("list-" + clasament[1].culoare);
   echipaDreaptaFinalaMare.appendChild(ulEchipaDreaptaFinalaMare);
@@ -457,11 +119,6 @@ document.getElementById("myForm").addEventListener("submit", function (event) {
   return true;
 });
 
-function removeValue(cell) {
-  // Remove the value from the table cell
-  cell.innerHTML = "";
-}
-
 // Add event listener to delete-button
 table.addEventListener("click", function (event) {
   if (event.target.classList.contains("delete-button")) {
@@ -471,7 +128,8 @@ table.addEventListener("click", function (event) {
 });
 
 //screen the table data
-const dataPlayer = [];
+export const dataPlayer = [];
+
 const getDataButton = document.getElementById("getDataButton");
 getDataButton.addEventListener("click", function () {
   const rows = table.getElementsByTagName("tr");
@@ -495,154 +153,6 @@ getDataButton.addEventListener("click", function () {
   removeDeleteButtons();
 });
 
-function checkTableContent() {
-  const table = document.getElementById("teams");
-  const rows = table.getElementsByTagName("tr");
-
-  for (let i = 0; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    for (let j = 0; j < cells.length; j++) {
-      const cellContent = cells[j].innerText.trim();
-      if (cellContent === "") {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-function findFirstEmptyPosition() {
-  const table = document.getElementById("teams");
-  const rows = table.getElementsByTagName("tr");
-
-  for (let j = 0; j < rows[0].cells.length; j++) {
-    for (let i = 0; i < rows.length; i++) {
-      const cellContent = rows[i].cells[j].innerText.trim();
-      if (cellContent === "") {
-        return { row: i, column: j };
-      }
-    }
-  }
-
-  return null;
-}
-
-function removeDeleteButtons() {
-  const table = document.getElementById("teams");
-  const rows = table.getElementsByTagName("tr");
-
-  for (let i = 0; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    for (let j = 0; j < cells.length; j++) {
-      const deleteButton = cells[j].querySelector(".delete-button");
-      if (deleteButton) {
-        deleteButton.remove();
-      }
-    }
-  }
-}
-
-function addValueToList(etapa) {
-  var searchValue;
-  var selectElement;
-  switch (etapa) {
-    case 1:
-      searchValue = document.getElementById("searchInput1").value;
-      selectElement = document.getElementById("selectare1");
-      break;
-    case 2:
-      searchValue = document.getElementById("searchInput2").value;
-      selectElement = document.getElementById("selectare2");
-      break;
-    case 3:
-      searchValue = document.getElementById("searchInput3").value;
-      selectElement = document.getElementById("selectare3");
-      break;
-    case 4:
-      searchValue = document.getElementById("searchInput4").value;
-      selectElement = document.getElementById("selectare4");
-      break;
-    case 5:
-      searchValue = document.getElementById("searchInput5").value;
-      selectElement = document.getElementById("selectare5");
-      break;
-    case 6:
-      searchValue = document.getElementById("searchInput6").value;
-      selectElement = document.getElementById("selectare6");
-      break;
-    case 7:
-      searchValue = document.getElementById("searchInput7").value;
-      selectElement = document.getElementById("selectare7");
-      break;
-  }
-
-  // search value in dataPlayer
-  for (var i = 0; i < dataPlayer.length; i++) {
-    var matchData = dataPlayer[i];
-    for (var key in matchData) {
-      if (matchData[key] === searchValue) {
-        var listClassName = "list-" + selectElement.value;
-        //console.log(selectElement.value);
-        var list = document.querySelector(
-          "#etapa" + etapa + " ul." + listClassName
-        );
-
-        var matchInfo = document.querySelector(
-          "#etapa" + etapa + " .match-info"
-        );
-
-        var numeEchipaStanga =
-          matchInfo.children[0].children[0].textContent.replace(/\s+/g, "");
-        var numeEchipaDreapta =
-          matchInfo.children[2].children[0].textContent.replace(/\s+/g, "");
-        var echipaPlayer = key;
-
-        var listItem = document.createElement("li");
-        listItem.textContent = searchValue;
-
-        // verificam daca golul este autogol
-        // daca s-a dat vs echipei lui
-        if (numeEchipaStanga === echipaPlayer) {
-          // daca echipa din stanga e echipa jucatorului
-          // verificam daca golul s-a dat la echipa din dreapta
-
-          if (selectElement.value === numeEchipaDreapta) {
-            // atunci e clar ca e autogol
-            // logica de autogol
-
-            listItem.textContent = searchValue + " ( autogol ) ";
-            listItem.style.color = "red";
-          }
-        } else if (numeEchipaDreapta === echipaPlayer) {
-          // daca echipa din dreapta e echipa jucatorului
-          // verificam daca golul s-a dat la stanga din dreapta
-
-          if (selectElement.value === numeEchipaStanga) {
-            // atunci e clar ca e autogol
-            // logica de autogol
-
-            listItem.textContent = searchValue + " ( autogol ) ";
-            listItem.style.color = "red";
-          }
-        }
-
-        // delete button
-        const deleteIcon = document.createElement("i");
-        deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
-
-        // delete button listener + update score
-        deleteIcon.addEventListener("click", function () {
-          list.removeChild(listItem);
-          updateScoreMatch(etapa);
-        });
-        listItem.appendChild(deleteIcon);
-        list.appendChild(listItem);
-
-        updateScoreMatch(etapa);
-      }
-    }
-  }
-}
 
 // afisare recomandari
 function afiseazaRecomandari(etapa, searchTerm) {
@@ -718,9 +228,12 @@ function updateScoreMatch(etapa) {
   sortClasament();
 
   removeFinalsTeams();
+
   addFinalsTeam(clasament);
+
   const finale = document.querySelectorAll(".finala");
   finale.forEach((finala) => {
+    console.log(finala);
     const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
     const rightTeamGoalsUl = finala.querySelector(".right-team-info ul");
 
@@ -733,6 +246,7 @@ function updateScoreMatch(etapa) {
 
   removeTableRows("golgheteryBody");
   removeTableRows("autogolgheteriBody");
+
   populateGolgheteryTable();
   populateAutogolgheteriTable();
 }
@@ -966,7 +480,7 @@ function calculateAutogoals(names) {
     const liElements = ul.querySelectorAll("li");
     liElements.forEach((li) => {
       const playerName = li.textContent.trim();
-      const cleanedPlayerName = playerName.replace("( autogol )", "").trim();      
+      const cleanedPlayerName = playerName.replace("( autogol )", "").trim();
 
       // Check if the player name contains "autogol"
       if (playerName.toLowerCase().includes("autogol")) {
