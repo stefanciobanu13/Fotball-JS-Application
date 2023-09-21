@@ -901,4 +901,3 @@ function populateGolgheteryTable() {
   //console.log(dataPlayerFInala,dataPlayerEtapeFinala);
   addGoalScorerRows(dataPlayerName, dataPlayerFInala, dataPlayerEtapeFinala);
 }
-

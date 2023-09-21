@@ -295,8 +295,6 @@
 </head>
 
 <body>
-
-    <script src="/assets/scripts/script.js" type="module"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         inteGrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -417,10 +415,10 @@
             <h3>Etapa 1</h3>
 
             <input type="text" id="searchInput1" placeholder="Introduceți o valoare">
-            <button id="introdu1">Introdu</button>
+            <button onclick="addValueToList(1)">Introdu</button>
             <ul id="recomandari1" class="recomandari"></ul>
             <br>
-            <select id="selectare8" class="selectare">
+            <select id="selectare1" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -490,10 +488,10 @@
         <div class="etapa" id="etapa2">
             <h3>Etapa 2</h3>
             <input type="text" id="searchInput2" placeholder="Introduceți o valoare">
-            <button id="introdu2">Introdu</button>
+            <button onclick="addValueToList(2)">Introdu</button>
             <ul id="recomandari2" class="recomandari"></ul>
             <br>
-            <select id="selectare9" class="selectare">
+            <select id="selectare2" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -566,10 +564,10 @@
         <div class="etapa" id="etapa3">
             <h3>Etapa 3</h3>
             <input type="text" id="searchInput3" placeholder="Introduceți o valoare">
-            <button id="introdu3">Introdu</button>
+            <button onclick="addValueToList(3)">Introdu</button>
             <ul id="recomandari3" class="recomandari"></ul>
             <br>
-            <select id="selectare10" class="selectare">
+            <select id="selectare3" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -641,10 +639,10 @@
         <div class="etapa" id="etapa4">
             <h3>Etapa 4</h3>
             <input type="text" id="searchInput4" placeholder="Introduceți o valoare">
-            <button id="introdu4">Introdu</button>
+            <button onclick="addValueToList(4)">Introdu</button>
             <ul id="recomandari4" class="recomandari"></ul>
             <br>
-            <select id="selectare11" class="selectare">
+            <select id="selectare4" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -717,10 +715,10 @@
         <div class="etapa" id="etapa5">
             <h3>Etapa 5</h3>
             <input type="text" id="searchInput5" placeholder="Introduceți o valoare">
-            <button id="introdu5">Introdu</button>
+            <button onclick="addValueToList(5)">Introdu</button>
             <ul id="recomandari5" class="recomandari"></ul>
             <br>
-            <select id="selectare12" class="selectare">
+            <select id="selectare5" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -793,10 +791,10 @@
         <div class="etapa" id="etapa6">
             <h3>Etapa 6</h3>
             <input type="text" id="searchInput6" placeholder="Introduceți o valoare">
-            <button id="introdu6">Introdu</button>
+            <button onclick="addValueToList(6)">Introdu</button>
             <ul id="recomandari6" class="recomandari"></ul>
             <br>
-            <select id="selectare13" class="selectare">
+            <select id="selectare6" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -891,10 +889,10 @@
 
         <div class="finala" id="etapa7">
             <input type="text" id="searchInput7" placeholder="Introduceți o valoare">
-            <button id="introdu7">Introdu</button>
+            <button onclick="addValueToList(7)">Introdu</button>
             <ul id="recomandari7" class="recomandari"></ul>
             <br>
-            <select id="selectare14" class="selectare">
+            <select id="selectare7" class="selectare">
                 <option value="Verde">Verde</option>
                 <option value="Albastru">Albastru</option>
                 <option value="Portocaliu">Portocaliu</option>
@@ -960,6 +958,19 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="ptable">
+            <h1 class="headin">AutoGolgheteri</h1>
+            <table class="table table-striped">
+                <tr class="bg info">
+                    <th>Locul</th>
+                    <th>Nume</th>
+                    <th>Total</th>
+                </tr>
+                <tbody id="autogolgheteriBody">
+                </tbody>
+            </table>
+        </div>
     </div>
     <br>
     <br>
@@ -971,7 +982,7 @@
 
 
 
-
+    <script src="/assets/scripts/script.js"></script>
 </body>
 
 
