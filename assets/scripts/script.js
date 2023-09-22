@@ -5,9 +5,9 @@ import {
   updateClasament,
 } from "./clasament.js";
 
-import {countNonNullLi, removeDeleteButtons} from "./helpers.js";
+import { countNonNullLi, removeDeleteButtons } from "./helpers.js";
 import {} from "./golgheteri.js";
-import {table} from "./table.js";
+import { table } from "./table.js";
 import {} from "./match.js";
 
 sortClasament();
@@ -21,10 +21,12 @@ function addFinalsTeam(clasament) {
 
   const echipaStangaFinalaMica = finalaMica.children[0].children[0].children[0];
 
-  const echipaDreaptaFinalaMica = finalaMica.children[0].children[2].children[0];
+  const echipaDreaptaFinalaMica =
+    finalaMica.children[0].children[2].children[0];
 
   const echipaStangaFinalaMare = finalaMare.children[0].children[0].children[0];
-  const echipaDreaptaFinalaMare = finalaMare.children[0].children[2].children[0];
+  const echipaDreaptaFinalaMare =
+    finalaMare.children[0].children[2].children[0];
 
   const numeEchipaStangaFinalaMica = document.createElement("div");
   numeEchipaStangaFinalaMica.classList.add(clasament[2].culoare);
@@ -153,7 +155,6 @@ getDataButton.addEventListener("click", function () {
   removeDeleteButtons();
 });
 
-
 // afisare recomandari
 function afiseazaRecomandari(etapa, searchTerm) {
   var recomandari = [];
@@ -178,6 +179,140 @@ function afiseazaRecomandari(etapa, searchTerm) {
     });
     recomandariList.appendChild(li);
   });
+}
+
+function parseButtons() {
+  document.getElementById("button1").addEventListener("click", function () {
+    addValueToList(1);
+  });
+
+  document.getElementById("button2").addEventListener("click", function () {
+    addValueToList(2);
+  });
+
+  document.getElementById("button3").addEventListener("click", function () {
+    addValueToList(3);
+  });
+
+  document.getElementById("button4").addEventListener("click", function () {
+    addValueToList(4);
+  });
+
+  document.getElementById("button5").addEventListener("click", function () {
+    addValueToList(5);
+  });
+
+  document.getElementById("button6").addEventListener("click", function () {
+    addValueToList(6);
+  });
+
+  document.getElementById("button7").addEventListener("click", function () {
+    addValueToList(7);
+  });
+}
+
+parseButtons();
+
+function addValueToList(etapa) {
+  var searchValue;
+  var selectElement;
+  switch (etapa) {
+    case 1:
+      searchValue = document.getElementById("searchInput1").value;
+      selectElement = document.getElementById("selectare1");
+      break;
+    case 2:
+      searchValue = document.getElementById("searchInput2").value;
+      selectElement = document.getElementById("selectare2");
+      break;
+    case 3:
+      searchValue = document.getElementById("searchInput3").value;
+      selectElement = document.getElementById("selectare3");
+      break;
+    case 4:
+      searchValue = document.getElementById("searchInput4").value;
+      selectElement = document.getElementById("selectare4");
+      break;
+    case 5:
+      searchValue = document.getElementById("searchInput5").value;
+      selectElement = document.getElementById("selectare5");
+      break;
+    case 6:
+      searchValue = document.getElementById("searchInput6").value;
+      selectElement = document.getElementById("selectare6");
+      break;
+    case 7:
+      searchValue = document.getElementById("searchInput7").value;
+      selectElement = document.getElementById("selectare7");
+      break;
+  }
+
+  // search value in dataPlayer
+  for (var i = 0; i < dataPlayer.length; i++) {
+    var matchData = dataPlayer[i];
+    for (var key in matchData) {
+      if (matchData[key] === searchValue) {
+        var listClassName = "list-" + selectElement.value;
+        //console.log(selectElement.value);
+        var list = document.querySelector(
+          "#etapa" + etapa + " ul." + listClassName
+        );
+
+        var matchInfo = document.querySelector(
+          "#etapa" + etapa + " .match-info"
+        );
+
+        var numeEchipaStanga =
+          matchInfo.children[0].children[0].textContent.replace(/\s+/g, "");
+        var numeEchipaDreapta =
+          matchInfo.children[2].children[0].textContent.replace(/\s+/g, "");
+        var echipaPlayer = key;
+
+        var listItem = document.createElement("li");
+        listItem.textContent = searchValue;
+
+        // verificam daca golul este autogol
+        // daca s-a dat vs echipei lui
+        if (numeEchipaStanga === echipaPlayer) {
+          // daca echipa din stanga e echipa jucatorului
+          // verificam daca golul s-a dat la echipa din dreapta
+
+          if (selectElement.value === numeEchipaDreapta) {
+            // atunci e clar ca e autogol
+            // logica de autogol
+
+            listItem.textContent = searchValue + " ( autogol ) ";
+            listItem.style.color = "red";
+          }
+        } else if (numeEchipaDreapta === echipaPlayer) {
+          // daca echipa din dreapta e echipa jucatorului
+          // verificam daca golul s-a dat la stanga din dreapta
+
+          if (selectElement.value === numeEchipaStanga) {
+            // atunci e clar ca e autogol
+            // logica de autogol
+
+            listItem.textContent = searchValue + " ( autogol ) ";
+            listItem.style.color = "red";
+          }
+        }
+
+        // delete button
+        const deleteIcon = document.createElement("i");
+        deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
+
+        // delete button listener + update score
+        deleteIcon.addEventListener("click", function () {
+          list.removeChild(listItem);
+          updateScoreMatch(etapa);
+        });
+        listItem.appendChild(deleteIcon);
+        list.appendChild(listItem);
+
+        updateScoreMatch(etapa);
+      }
+    }
+  }
 }
 
 function attachInputEvent(etapa) {
