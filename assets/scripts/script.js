@@ -6,9 +6,8 @@ import {
   updateClasament,
 } from "./clasament.js";
 
-
 import { countNonNullLi, removeDeleteButtons } from "./helpers.js";
-import { table , clearTable} from "./table.js";
+import { table, clearTable } from "./table.js";
 
 sortClasament();
 buildClasament(clasament);
@@ -20,13 +19,17 @@ function addFinalsTeam(clasament) {
   var finalaMare = document.getElementById("finala-mare");
 
   const echipaStangaFinalaMica = finalaMica.children[0].children[0].children[0];
-
   const echipaDreaptaFinalaMica =
     finalaMica.children[0].children[2].children[0];
 
   const echipaStangaFinalaMare = finalaMare.children[0].children[0].children[0];
   const echipaDreaptaFinalaMare =
     finalaMare.children[0].children[2].children[0];
+
+  const ulFinaaMicaEchipaStangaPlace = finalaMica.children[0].children[0];
+  const ulFinaaMicaEchipaDreaptaPlace = finalaMica.children[0].children[2];
+  const ulFinalaMareEchipaStangaPlace = finalaMare.children[0].children[0];
+  const ulFinalaMareEchipaDreaptaPlace = finalaMare.children[0].children[2];
 
   const numeEchipaStangaFinalaMica = document.createElement("div");
   numeEchipaStangaFinalaMica.classList.add(clasament[2].culoare);
@@ -77,40 +80,17 @@ function addFinalsTeam(clasament) {
 
   table.style.marginLeft = "auto";
   table.style.marginRight = "auto";
-  
+
   addedDivs.push(numeEchipaStangaFinalaMica);
   addedDivs.push(numeEchipaDreaptaFinalaMica);
   addedDivs.push(numeEchipaStangaFinalaMare);
   addedDivs.push(numeEchipaDreaptaFinalaMare);
 
-  addedDivs.push(ulEchipaStangaFinalaMica);
-  addedDivs.push(ulEchipaDreaptaFinalaMica);
-  addedDivs.push(ulEchipaStangaFinalaMare);
-  addedDivs.push(ulEchipaDreaptaFinalaMare);
+  ulFinaaMicaEchipaStangaPlace.appendChild(ulEchipaStangaFinalaMica);
+  ulFinaaMicaEchipaDreaptaPlace.appendChild(ulEchipaDreaptaFinalaMica);
+  ulFinalaMareEchipaStangaPlace.appendChild(ulEchipaStangaFinalaMare);
+  ulFinalaMareEchipaDreaptaPlace.appendChild(ulEchipaDreaptaFinalaMare);
 }
-
-addFinalsTeam(clasament);
-
-// listener to the forms submit event
-document.getElementById("myForm").addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const form = event.target;
-  const formData = new FormData(form);
-
-  fetch(form.action, {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-  return true;
-});
 
 // Add event listener to delete-button
 table.addEventListener("click", function (event) {
@@ -141,7 +121,6 @@ getDataButton.addEventListener("click", function () {
     dataPlayer.push(rowData);
   }
 
-  console.log(dataPlayer);
   getDataButton.remove();
   removeDeleteButtons();
 });
@@ -204,6 +183,39 @@ function parseButtons() {
 
 parseButtons();
 
+// functie care va fii utilizata pentru actualizarea scorului fiecarui meci
+function updateScoreMatch(etapa) {
+  resetClasamentValue();
+  clearTable();
+
+  const matches = document.querySelectorAll(".match");
+  matches.forEach((match) => {
+    const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
+    const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
+
+    const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
+    const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
+
+    const scoreElement = match.querySelector(".scor");
+    scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
+
+    updateClasament(match);
+  }, this);
+
+  sortClasament();
+  buildClasament(clasament);
+  sortClasament();
+
+  removeFinalsTeams();
+  addFinalsTeam(clasament);
+
+  removeTableRows("golgheteryBody");
+  removeTableRows("autogolgheteriBody");
+
+  populateGolgheteryTable();
+  populateAutogolgheteriTable();
+}
+
 function addValueToList(etapa) {
   var searchValue;
   var selectElement;
@@ -244,9 +256,7 @@ function addValueToList(etapa) {
     for (var key in matchData) {
       if (matchData[key] === searchValue) {
         var listClassName = "list-" + selectElement.value;
-      
-       
-        
+
         var list = document.querySelector(
           "#etapa" + etapa + " ul." + listClassName
         );
@@ -254,14 +264,6 @@ function addValueToList(etapa) {
         var matchInfo = document.querySelector(
           "#etapa" + etapa + " .match-info"
         );
-
-        if (etapa == 7) {
-          // daca e finala
-          // trebuie sa creem ul-ul cu cele 4 culori
-
-          console.log("finala" + matchInfo.children[0].children[0].textContent.replace(/\s+/g, ""));
-          
-      }
 
         var numeEchipaStanga =
           matchInfo.children[0].children[0].textContent.replace(/\s+/g, "");
@@ -305,15 +307,42 @@ function addValueToList(etapa) {
         // delete button listener + update score
         deleteIcon.addEventListener("click", function () {
           list.removeChild(listItem);
-          updateScoreMatch(etapa);
+
+          if (etapa != 7) {
+            updateScoreMatch(etapa);
+          } else {
+            updateFinals();
+          }
         });
+
         listItem.appendChild(deleteIcon);
         list.appendChild(listItem);
 
-        updateScoreMatch(etapa);
+        if (etapa != 7) {
+          updateScoreMatch(etapa);
+        } else {
+          updateFinals();
+        }
       }
     }
   }
+}
+
+function updateFinals() {
+  const finale = document.querySelectorAll(".finala");
+  finale.forEach((finala) => {
+    const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
+    const rightTeamGoalsUl = finala.querySelector(".right-team-info ul");
+
+    const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
+    const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
+
+    const scoreElement = finala.querySelector(".scor");
+    scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
+  }, this);
+
+  populateGolgheteryTable();
+  populateAutogolgheteriTable();
 }
 
 function attachInputEvent(etapa) {
@@ -339,56 +368,6 @@ function attachInputEvent(etapa) {
 for (var etapa = 1; etapa <= 7; etapa++) {
   attachInputEvent(etapa);
 }
-
-// functie care va fii utilizata pentru actualizarea scorului fiecarui meci
-function updateScoreMatch(etapa) {
-  resetClasamentValue();
-  clearTable();
-
-  const matches = document.querySelectorAll(".match");
-  matches.forEach((match) => {
-    const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
-    const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
-
-    const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
-    const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
-
-    const scoreElement = match.querySelector(".scor");
-    scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
-
-    updateClasament(match);
-  }, this);
-
-  sortClasament();
-  buildClasament(clasament);
-  sortClasament();
-
-  removeFinalsTeams();
-
-  addFinalsTeam(clasament);
-
-  const finale = document.querySelectorAll(".finala");
-  finale.forEach((finala) => {
-    const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
-    const rightTeamGoalsUl = finala.querySelector(".right-team-info ul");
-
-    const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
-    const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
-
-    const scoreElement = finala.querySelector(".scor");
-    scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
-  }, this);
-
-  removeTableRows("golgheteryBody");
-  removeTableRows("autogolgheteriBody");
-
-  populateGolgheteryTable();
-  populateAutogolgheteriTable();
-}
-
-
-
-
 
 function removeFinalsTeams() {
   for (var i = 0; i < addedDivs.length; i++) {

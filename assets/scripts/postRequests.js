@@ -10,6 +10,28 @@ let teamGreenId;
 let teamBlueId;
 let teamGrayId;
 
+// listener to the forms submit event
+document.getElementById("myForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  return true;
+});
+
+
 function convertDateFormat(inputDate) {
   //convert the data format 
   const parts = inputDate.split('-');
