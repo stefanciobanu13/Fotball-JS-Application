@@ -1,7 +1,6 @@
-import { clasament } from "./script.js";
-import { saveTheForm } from "./app2.js";
+import { clasament } from "./clasament.js";
 import { dataPlayer } from "./script.js";
-import { countNonNullLi } from "./script.js";
+import { countNonNullLi } from "./helpers.js";
 
 const url = "http://localhost:8083/"
 let roundNumber;
@@ -10,6 +9,28 @@ let teamOrangeId;
 let teamGreenId;
 let teamBlueId;
 let teamGrayId;
+
+// listener to the forms submit event
+document.getElementById("myForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  return true;
+});
+
 
 function convertDateFormat(inputDate) {
   //convert the data format 
@@ -138,7 +159,8 @@ export async function postTeams() {
   await assignTeamsId(gray);
   await assignTeamsId(blue);
   await assignPlayerId();
-  storeGame()
+  await storeGame()
+  await postGoals();
 }
 
 function extractNames(fullName) {
@@ -155,13 +177,9 @@ function extractNames(fullName) {
 async function assignPlayerId() {
   dataPlayer.forEach(async playerMap => {
     const portocaliuName = playerMap['Portocaliu'];
-    console.log(`the name of the player orange is ${portocaliuName}`)
     const verdeName = playerMap['Verde'];
-    console.log(`the name of the player green is ${verdeName}`)
     const albastruName = playerMap['Albastru'];
-    console.log(`the name of the player blue is ${albastruName}`)
     const griName = playerMap['Gri'];
-    console.log(`the name of the player grey is ${griName}`)
 
     if (portocaliuName) {
       const names = extractNames(portocaliuName);
@@ -248,10 +266,8 @@ export const postGame = function postGame() {
   const games = document.getElementsByClassName('match');
   const gamesArray = Array.from(games);
   gamesArray.forEach(element => {
-    storeGame(element.id);
+    storeGame();
   })
-
-
 }
 
 async function storeGame() {
@@ -268,65 +284,57 @@ async function storeGame() {
     const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
     const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
     gameNumber = matches.id.slice(5);
-    console.log(`Match info: nr game = ${gameNumber}, leftTeamName = ${leftTeamName},rightTeamName= ${rightTeamName},leftTeamScore = ${leftTeamGoalsCount}, rightTeamScore = ${rightTeamGoalsCount}`)
 
     await saveTheGame(gameNumber, leftTeamGoalsCount, rightTeamGoalsCount, leftTeamName, rightTeamName);
+    //get back the id of the game
+
 
   }, this);
-
-
-  const fmLeftTeamName = document.querySelector('#finala-mica .left-team-info .team-name');
-  const fmRightTeamName = document.querySelector('#finala-mica .right-team-info .team-name');
-  const fMLeftTeamName = document.querySelector('#finala-mare .left-team-info .team-name');
-  const fMRightTeamName = document.querySelector('#finala-mare .right-team-info .team-name');
+  //define the data of the finals
+  const fmLeftTeamName = document.querySelector('#finala-mica .left-team-info .team-name').children[0].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  const fmRightTeamName = document.querySelector('#finala-mica .right-team-info .team-name').children[0].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  const fMLeftTeamName = document.querySelector('#finala-mare .left-team-info .team-name').children[0].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+  const fMRightTeamName = document.querySelector('#finala-mare .right-team-info .team-name').children[0].textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
   const numberFm = 13;
   const numberFM = 14;
-
   const leftTeamFmScore = countNonNullLi(document.querySelector('#finala-mica .left-team-info ul'));
   const rightTeamFmScore = countNonNullLi(document.querySelector('#finala-mica .right-team-info ul'));
   const leftTeamFMScore = countNonNullLi(document.querySelector('#finala-mare .left-team-info ul'));
   const rightTeamFMScore = countNonNullLi(document.querySelector('#finala-mare .right-team-info ul'));
 
-console.log(`the info of small final: team1Name = ${leftTeamName}, team2Name = ${rightTeamName}, `)
+  //console.log(`the info of SMALL final: team1Name = ${fmLeftTeamName}, team2Name = ${fmRightTeamName}, gameNumber= ${numberFm}, scoreT1 = ${leftTeamFmScore}, scoreT2= ${rightTeamFmScore} `);
+  //console.log(`the info of BIG final: team1Name = ${fMLeftTeamName}, team2Name = ${fMRightTeamName}, gameNumber= ${numberFM}, scoreT1 = ${leftTeamFMScore}, scoreT2= ${rightTeamFMScore} `);
 
   saveTheGame(numberFm, leftTeamFmScore, rightTeamFmScore, fmLeftTeamName, fmRightTeamName);
   saveTheGame(numberFM, leftTeamFMScore, rightTeamFMScore, fMLeftTeamName, fMRightTeamName);
 
 }
 
-function saveSmallFinal(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName) {
-
-}
-
-function saveBigFinal(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName) {
-
-}
-
 async function saveTheGame(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName) {
-  console.log(`Inside the saveGameMethod: gameNr = ${gameNumber}, team1Score = ${team1Score},team2Score= ${team2Score},leftTeamName = ${leftTeamName}, rightTeamName = ${rightTeamName}`);
+  //  console.log(`Inside the saveGameMethod: gameNr = ${gameNumber}, team1Score = ${team1Score},team2Score= ${team2Score},leftTeamName = ${leftTeamName}, rightTeamName = ${rightTeamName}`);
   let team1Id;
   let team2Id;
 
   switch (leftTeamName) {
     case "Portocaliu": team1Id = teamOrangeId;
-      console.log("inside first switch case  1")
-      console.log(`the ID OF ORANGE IS ${teamOrangeId}`)
-      console.log(`the ID OF GREEN IS ${teamGreenId}`)
-      console.log(`the ID OF BLUE IS ${teamBlueId}`)
-      console.log(`the ID OF GRAY IS ${teamGrayId}`)
+      // console.log("inside first switch case  1")
+      // console.log(`the ID OF ORANGE IS ${teamOrangeId}`)
+      // console.log(`the ID OF GREEN IS ${teamGreenId}`)
+      // console.log(`the ID OF BLUE IS ${teamBlueId}`)
+      // console.log(`the ID OF GRAY IS ${teamGrayId}`)
       break;
     case "Verde": team1Id = teamGreenId;
-      console.log("inside first switch case  2")
-      console.log(`the ID OF ORANGE IS ${teamOrangeId}`)
-      console.log(`the ID OF GREEN IS ${teamGreenId}`)
-      console.log(`the ID OF BLUE IS ${teamBlueId}`)
-      console.log(`the ID OF GRAY IS ${teamGrayId}`)
+      // console.log("inside first switch case  2")
+      // console.log(`the ID OF ORANGE IS ${teamOrangeId}`)
+      // console.log(`the ID OF GREEN IS ${teamGreenId}`)
+      // console.log(`the ID OF BLUE IS ${teamBlueId}`)
+      // console.log(`the ID OF GRAY IS ${teamGrayId}`)
       break;
     case "Albastru": team1Id = teamBlueId;
-      console.log("inside first switch case  3")
+      //  console.log("inside first switch case  3")
       break;
     case "Gri": team1Id = teamGrayId;
-      console.log("inside first switch case  4")
+      // console.log("inside first switch case  4")
       break;
   }
   switch (rightTeamName) {
@@ -348,17 +356,169 @@ async function saveTheGame(gameNumber, team1Score, team2Score, leftTeamName, rig
     team2Goals: team2Score,
     number: gameNumber
   }
-  console.log(`post data object ${postData.team1Goals} ${postData.team2Goals}, team1Id= ${postData.team1Id},team2Id =${postData.team2Id}, roundId= ${postData.roundId}, number= ${postData.number} `);
+  // console.log(`post data object ${postData.team1Goals} ${postData.team2Goals}, team1Id= ${postData.team1Id},team2Id =${postData.team2Id}, roundId= ${postData.roundId}, number= ${postData.number} `);
 
   axios.post(`${url}games`, postData).then(response => {
-    console.log(`GAME number ${gameNumber} was saved with t1 score= ${postData.team1Goals} and t2score = ${postData.team2Goals}`)
+    // console.log(`GAME number ${gameNumber} was saved with t1 score= ${postData.team1Goals} and t2score = ${postData.team2Goals}`)
   }).catch(error => {
     saveTheGame(gameNumber, team1Score, team2Score, leftTeamName, rightTeamName);
     console.error('Error:', error);
   });
 }
 
-export const postGoal = function postGoal() {
-
-
+export async function postGoals() {
+  const matches = document.querySelectorAll('.match');
+  matches.forEach(async match => {
+    await processMatch(match);
+  });
+  const sfNr = 13;
+  const bfNr = 14;
+  const smallF = "mica";
+  const bigF = "mare"
+  processFinals(sfNr, smallF);
+  processFinals(bfNr, bigF);
 }
+
+//this is a method to save the goals from the finals
+async function processFinals(gameNumber, type) {
+  try {
+    const game = await getGameByNumberAndRound(gameNumber, theRoundId);
+    const gameId = game.id;
+    const match = document.getElementById(`finala-${type}`);
+    const leftScorersUl = match.querySelector('.left-team-info ul');
+    const rightScorersUl = match.querySelector('.right-team-info ul');
+    const leftScorers = leftScorersUl.querySelectorAll('li');
+    const rightScorers = rightScorersUl.querySelectorAll('li');
+    await processScorers(leftScorers, gameId);
+    await processScorers(rightScorers, gameId);
+  } catch (error) {
+    processFinals(gameNumber, type);
+    console.error(`Error processing match with game number ${gameNumber}: ${error}`);
+  }
+}
+
+async function processMatch(match) {
+  const gameNumber = match.id.slice(5);
+  // console.log(`Processing match with game number ${gameNumber}`);
+
+  try {
+    const game = await getGameByNumberAndRound(gameNumber, theRoundId);
+    const gameId = game.id;
+    //  console.log(`Found game with ID ${gameId}`);
+
+    const leftScorersUl = match.querySelector('.left-team-info ul');
+    const rightScorersUl = match.querySelector('.right-team-info ul');
+    const leftScorers = leftScorersUl.querySelectorAll('li');
+    const rightScorers = rightScorersUl.querySelectorAll('li');
+
+    await processScorers(leftScorers, gameId);
+    await processScorers(rightScorers, gameId);
+  } catch (error) {
+    processMatch(match);
+    console.error(`Error processing match with game number ${gameNumber}: ${error}`);
+  }
+}
+
+async function getGameByNumberAndRound(gameNumber, roundId) {
+  try {
+    const response = await axios.get(`http://localhost:8083/games/byNumberAndRound?gameNumber=${gameNumber}&roundId=${roundId}`);
+    return response.data;
+  } catch (error) {
+    getGameByNumberAndRound(gameNumber, roundId);
+    throw new Error(`Error fetching game data: ${error}`);
+  }
+}
+
+async function processScorers(scorers, gameId) {
+  for (const scorer of scorers) {
+    const scorerText = scorer.textContent.trim();
+    if (scorerText !== '') {
+      const playerFullName = extractNames(scorerText);
+      const playerId = await findPlayerId(playerFullName.firstName, playerFullName.lastName);
+      console.log(`Scorer: ${playerFullName.firstName} ${playerFullName.lastName}, Player ID: ${playerId}`);
+      await saveGoal(playerId, gameId);
+    }
+  }
+}
+
+async function findPlayerId(firstName, lastName) {
+  try {
+    const response = await axios.get(`http://localhost:8083/players/name/?firstName=${firstName}&lastName=${lastName}`);
+    return response.data.id;
+  } catch (error) {
+    findPlayerId(firstName, lastName);
+    console.error(`Error fetching player data: ${error}`);
+    return null;
+  }
+}
+
+async function saveGoal(playerId, gameId) {
+  try {
+    const postData = {
+      playerId: playerId,
+      gameId: gameId
+    };
+    await axios.post(`http://localhost:8083/goals`, postData);
+    // console.log(`Goal saved for Player ID: ${playerId}, Game ID: ${gameId}`);
+  } catch (error) {
+    saveGoal(playerId, gameId);
+    console.error(`Error saving goal: ${error}`);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
