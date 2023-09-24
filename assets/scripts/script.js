@@ -1,14 +1,14 @@
 import {
   clasament,
+  resetClasamentValue,
   sortClasament,
   buildClasament,
   updateClasament,
 } from "./clasament.js";
 
+
 import { countNonNullLi, removeDeleteButtons } from "./helpers.js";
-import {} from "./golgheteri.js";
-import { table } from "./table.js";
-import {} from "./match.js";
+import { table , clearTable} from "./table.js";
 
 sortClasament();
 buildClasament(clasament);
@@ -74,12 +74,15 @@ function addFinalsTeam(clasament) {
 
   // make the table centered
   const table = document.querySelector("table");
+
   table.style.marginLeft = "auto";
   table.style.marginRight = "auto";
+  
   addedDivs.push(numeEchipaStangaFinalaMica);
   addedDivs.push(numeEchipaDreaptaFinalaMica);
   addedDivs.push(numeEchipaStangaFinalaMare);
   addedDivs.push(numeEchipaDreaptaFinalaMare);
+
   addedDivs.push(ulEchipaStangaFinalaMica);
   addedDivs.push(ulEchipaDreaptaFinalaMica);
   addedDivs.push(ulEchipaStangaFinalaMare);
@@ -87,18 +90,6 @@ function addFinalsTeam(clasament) {
 }
 
 addFinalsTeam(clasament);
-const finale = document.querySelectorAll(".finala");
-finale.forEach((finala) => {
-  const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
-  const rightTeamGoalsUl = finala.querySelector(".right-team-info ul");
-
-  const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
-  const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
-
-  const scoreElement = finala.querySelector(".scor");
-  scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
-}, this);
-//buildGolgheteri();
 
 // listener to the forms submit event
 document.getElementById("myForm").addEventListener("submit", function (event) {
@@ -253,7 +244,9 @@ function addValueToList(etapa) {
     for (var key in matchData) {
       if (matchData[key] === searchValue) {
         var listClassName = "list-" + selectElement.value;
-        //console.log(selectElement.value);
+      
+       
+        
         var list = document.querySelector(
           "#etapa" + etapa + " ul." + listClassName
         );
@@ -261,6 +254,14 @@ function addValueToList(etapa) {
         var matchInfo = document.querySelector(
           "#etapa" + etapa + " .match-info"
         );
+
+        if (etapa == 7) {
+          // daca e finala
+          // trebuie sa creem ul-ul cu cele 4 culori
+
+          console.log("finala" + matchInfo.children[0].children[0].textContent.replace(/\s+/g, ""));
+          
+      }
 
         var numeEchipaStanga =
           matchInfo.children[0].children[0].textContent.replace(/\s+/g, "");
@@ -368,7 +369,6 @@ function updateScoreMatch(etapa) {
 
   const finale = document.querySelectorAll(".finala");
   finale.forEach((finala) => {
-    console.log(finala);
     const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
     const rightTeamGoalsUl = finala.querySelector(".right-team-info ul");
 
@@ -386,68 +386,9 @@ function updateScoreMatch(etapa) {
   populateAutogolgheteriTable();
 }
 
-function clearTable() {
-  var table = document.getElementById("clasamentBody");
-  table.innerHTML = "";
-}
 
-function resetClasamentValue() {
-  clasament = [];
-  clasamentSelectiv = [];
-  clasament = [
-    {
-      culoare: "Verde",
-      meciuri_jucate: 0,
-      victorii: 0,
-      egaluri: 0,
-      infrangeri: 0,
-      goluri_date: 0,
-      goluri_primite: 0,
-      golaveraj: 0,
-      punctaj: 0,
-    },
-    {
-      culoare: `Portocaliu`,
-      meciuri_jucate: 0,
-      victorii: 0,
-      egaluri: 0,
-      infrangeri: 0,
-      goluri_date: 0,
-      goluri_primite: 0,
-      golaveraj: 0,
-      punctaj: 0,
-    },
-    {
-      culoare: `Albastru`,
-      meciuri_jucate: 0,
-      victorii: 0,
-      egaluri: 0,
-      infrangeri: 0,
-      goluri_date: 0,
-      goluri_primite: 0,
-      golaveraj: 0,
-      punctaj: 0,
-    },
-    {
-      culoare: `Gri`,
-      meciuri_jucate: 0,
-      victorii: 0,
-      egaluri: 0,
-      infrangeri: 0,
-      goluri_date: 0,
-      goluri_primite: 0,
-      golaveraj: 0,
-      punctaj: 0,
-    },
-  ];
 
-  clasamentSelectiv = [
-    { culoare: "Verde", vs_Portocaliu: 0, vs_Albastru: 0, vs_Gri: 0 },
-    { culoare: "Portocaliu", vs_Verde: 0, vs_Albastru: 0, vs_Gri: 0 },
-    { culoare: "Gri", vs_Portocaliu: 0, vs_Albastru: 0, vs_Verde: 0 },
-    { culoare: "Albastru", vs_Portocaliu: 0, vs_Verde: 0, vs_Gri: 0 },
-  ];
-}
+
 
 function removeFinalsTeams() {
   for (var i = 0; i < addedDivs.length; i++) {

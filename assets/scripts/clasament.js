@@ -1,7 +1,7 @@
 import { getMatchInformations } from "./helpers.js";
 import { getBetterTeamByDirectMatch } from "./match.js";
 
-export var clasament = [
+export let clasament = [
   {
     culoare: "Verde",
     meciuri_jucate: 0,
@@ -50,12 +50,70 @@ export var clasament = [
 
 console.log(clasament);
 
-export var clasamentSelectiv = [
+export let clasamentSelectiv = [
   { culoare: "Verde", vs_Portocaliu: 0, vs_Albastru: 0, vs_Gri: 0 },
   { culoare: "Portocaliu", vs_Verde: 0, vs_Albastru: 0, vs_Gri: 0 },
   { culoare: "Gri", vs_Portocaliu: 0, vs_Albastru: 0, vs_Verde: 0 },
   { culoare: "Albastru", vs_Portocaliu: 0, vs_Verde: 0, vs_Gri: 0 },
 ];
+
+export function resetClasamentValue() {
+  clasament = [];
+  clasamentSelectiv = [];
+  clasament = [
+    {
+      culoare: "Verde",
+      meciuri_jucate: 0,
+      victorii: 0,
+      egaluri: 0,
+      infrangeri: 0,
+      goluri_date: 0,
+      goluri_primite: 0,
+      golaveraj: 0,
+      punctaj: 0,
+    },
+    {
+      culoare: `Portocaliu`,
+      meciuri_jucate: 0,
+      victorii: 0,
+      egaluri: 0,
+      infrangeri: 0,
+      goluri_date: 0,
+      goluri_primite: 0,
+      golaveraj: 0,
+      punctaj: 0,
+    },
+    {
+      culoare: `Albastru`,
+      meciuri_jucate: 0,
+      victorii: 0,
+      egaluri: 0,
+      infrangeri: 0,
+      goluri_date: 0,
+      goluri_primite: 0,
+      golaveraj: 0,
+      punctaj: 0,
+    },
+    {
+      culoare: `Gri`,
+      meciuri_jucate: 0,
+      victorii: 0,
+      egaluri: 0,
+      infrangeri: 0,
+      goluri_date: 0,
+      goluri_primite: 0,
+      golaveraj: 0,
+      punctaj: 0,
+    },
+  ];
+
+  clasamentSelectiv = [
+    { culoare: "Verde", vs_Portocaliu: 0, vs_Albastru: 0, vs_Gri: 0 },
+    { culoare: "Portocaliu", vs_Verde: 0, vs_Albastru: 0, vs_Gri: 0 },
+    { culoare: "Gri", vs_Portocaliu: 0, vs_Albastru: 0, vs_Verde: 0 },
+    { culoare: "Albastru", vs_Portocaliu: 0, vs_Verde: 0, vs_Gri: 0 },
+  ];
+}
 
 export function buildClasament(data) {
   var table = document.getElementById("clasamentBody");

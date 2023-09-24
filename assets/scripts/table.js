@@ -17,6 +17,11 @@ export function populateTable(value) {
   }
 }
 
+export function clearTable() {
+  var table = document.getElementById("clasamentBody");
+  table.innerHTML = "";
+}
+
 export const submitButton = document.getElementById("button_selectPlayer");
 submitButton.addEventListener("click", function () {
   const input = document.getElementById("input_selectPlayer");
