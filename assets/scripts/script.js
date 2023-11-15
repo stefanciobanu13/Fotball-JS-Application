@@ -86,6 +86,11 @@ function addFinalsTeam(clasament) {
   addedDivs.push(numeEchipaStangaFinalaMare);
   addedDivs.push(numeEchipaDreaptaFinalaMare);
 
+  addedDivs.push(ulEchipaStangaFinalaMica);
+  addedDivs.push(ulEchipaDreaptaFinalaMica);
+  addedDivs.push(ulEchipaStangaFinalaMare);
+  addedDivs.push(ulEchipaDreaptaFinalaMare);
+
   ulFinaaMicaEchipaStangaPlace.appendChild(ulEchipaStangaFinalaMica);
   ulFinaaMicaEchipaDreaptaPlace.appendChild(ulEchipaDreaptaFinalaMica);
   ulFinalaMareEchipaStangaPlace.appendChild(ulEchipaStangaFinalaMare);
