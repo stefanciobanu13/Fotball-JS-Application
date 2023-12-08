@@ -184,6 +184,29 @@ function parseButtons() {
   document.getElementById("button7").addEventListener("click", function () {
     addValueToList(7);
   });
+
+
+  document.getElementById("buttonAuto1").addEventListener("click", function () {
+    addValueToList2(1);
+  });
+  document.getElementById("buttonAuto2").addEventListener("click", function () {
+    addValueToList2(2);
+  });
+  document.getElementById("buttonAuto3").addEventListener("click", function () {
+    addValueToList2(3);
+  });
+  document.getElementById("buttonAuto4").addEventListener("click", function () {
+    addValueToList2(4);
+  });
+  document.getElementById("buttonAuto5").addEventListener("click", function () {
+    addValueToList2(5);
+  });
+  document.getElementById("buttonAuto6").addEventListener("click", function () {
+    addValueToList2(6);
+  });
+  document.getElementById("buttonAuto7").addEventListener("click", function () {
+    addValueToList2(7);
+  });
 }
 
 parseButtons();
@@ -221,6 +244,7 @@ function updateScoreMatch(etapa) {
   populateAutogolgheteriTable();
 }
 
+// aceasta adauga jucatorul la echipa din selectie
 function addValueToList(etapa) {
   var searchValue;
   var selectElement;
@@ -332,6 +356,66 @@ function addValueToList(etapa) {
     }
   }
 }
+
+// Aceasta functie adauga jucatorul la echipa sa
+function addValueToList2(etapa) {
+  var searchValue;
+  switch (etapa) {
+    case 1:
+      searchValue = document.getElementById("searchInput1").value;
+      break;
+    case 2:
+      searchValue = document.getElementById("searchInput2").value;
+      break;
+    case 3:
+      searchValue = document.getElementById("searchInput3").value;
+      break;
+    case 4:
+      searchValue = document.getElementById("searchInput4").value;
+      break;
+    case 5:
+      searchValue = document.getElementById("searchInput5").value;
+      break;
+    case 6:
+      searchValue = document.getElementById("searchInput6").value;
+      break;
+    case 7:
+      searchValue = document.getElementById("searchInput7").value;
+      break;
+  }
+
+  // search value in dataPlayer
+  for (var i = 0; i < dataPlayer.length; i++) {
+    var matchData = dataPlayer[i];
+    for (var key in matchData) {
+      if (matchData[key] === searchValue) {
+
+        var listClassName = "list-" + key;
+        var list = document.querySelector("#etapa" + etapa + " ul." + listClassName);
+        console.log(`list: ${list}`)
+
+        // lista are 5 elemente?
+
+        var listItem = document.createElement("li");
+        listItem.textContent = searchValue;
+
+        // delete button
+        const deleteIcon = document.createElement('i');
+        deleteIcon.classList.add('fas', 'fa-trash-alt', 'delete-button');
+
+        // delete button listener + update score
+        deleteIcon.addEventListener('click', function () {
+          list.removeChild(listItem);
+          updateScoreMatch(etapa);
+        });
+        listItem.appendChild(deleteIcon);
+        list.appendChild(listItem);
+        updateScoreMatch(etapa);
+      }
+    }
+  }
+}
+
 
 function updateFinals() {
   const finale = document.querySelectorAll(".finala");
