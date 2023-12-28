@@ -3,8 +3,10 @@ import { dataPlayer } from "./script.js";
 import { countNonNullLi } from "./helpers.js";
 
 const url = "http://localhost:8083/"
+
 let roundNumber;
 let theRoundId;
+
 let teamOrangeId;
 let teamGreenId;
 let teamBlueId;
