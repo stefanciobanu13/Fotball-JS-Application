@@ -86,7 +86,7 @@
         <div class="row align-items-center">
             <div class="form-check mb-3">
                 <label class="form-label" for="nume">Nume</label>
-                <input id="prenume" type="text" aria-label="First name">
+                <input id="nume" type="text" aria-label="First name">
             </div>
 
             <div class="form-check mb-3">
@@ -94,20 +94,27 @@
                 <input id="prenume" type="text" aria-label="First name">
             </div>
 
-            <div class="form-check mb-3">
+            <div class="form-check">
                 <label for="acces">Acces</label>
-                <select class="form-select" id="acces" name="acces">
+                <select id="acces" name="acces">
                     <option value="jucator">Jucator</option>
-                    <option value="comisar">Comisar</option>
+                    <option value="comisie">Comisar</option>
                 </select>
 
             </div>
+            
 
             <div class="col-md-12">
                 <input type="submit" class="btn btn-primary" value="Introdu jucator" syle="color:">
             </div>
         </div>
 
+        <div id="successMessage" style="display: none;" class="alert alert-success mt-3" role="alert">
+            Jucatorul a fost adaugat cu succes!
+        </div>
+        <div id="errorMessage" style="display: none;" class="alert alert-danger mt-3" role="alert">
+            A fost o eroare la inregistrare.
+        </div>
 
     </form>
 
@@ -137,15 +144,26 @@
                 redirect: 'follow'
             };
 
-
-
             fetch(`https://iacademy2.oracle.com/ords/footballapp/psbd/adaugajucator?nume=${nume}&prenume=${prenume}&acces=${acces}`, requestOptions)
-                .then(response => response.text())
-                .then(result => console.log(result),
+                .then(response => {
+            if (response.ok) {
+                // Hide form
+                //document.getElementById('insertForm').style.display = 'none';
+                
+                // Display success message
+                document.getElementById('successMessage').style.display = 'block';
+            }
+            else if(!response.ok){
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+            return response.text();
+        })
+        .then(result => console.log(result))
+        .catch(error => {
+                    console.log('error', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                });
 
-
-                )
-                .catch(error => console.log('error', error));
         });
     </script>
 </body>
