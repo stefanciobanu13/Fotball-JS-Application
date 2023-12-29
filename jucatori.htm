@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>TEST RESTFul Api APEX</title>
+    <title>Jucatori</title>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,61 +19,83 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         inteGrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
-    <nav class="navbar bg-dark border-bottom border-bottom-dark" data-bs-theme="dark">
+        <nav
+        class="navbar bg-dark border-bottom border-bottom-dark"
+        data-bs-theme="dark"
+      >
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Jucatori</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Adauga Etapa</a>
-                    </li>
-                    <a class="nav-link" href="adauga-jucatori.htm">Adauga jucatori</a>
-                    </li>
-            </div>
+          <a class="navbar-brand" href="#">Jucatori</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="adauga-jucatori.htm"
+                  >Adauga Jucatori</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="editii.htm"
+                  >Editii</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="index.html"
+                  >Adauga Etapa</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
-
-    </nav>
+      </nav>
 
     <div id="display_id"></div>
-    <script>
-        var xhttp = new XMLHttpRequest();
-        let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
-        xhttp.open("GET", url, true);
-        xhttp.send();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var response = JSON.parse(this.response);
-                displayData(response);
-            }
-        };
+   <!-- Codul HTML existent -->
 
-        function displayData(data) {
+<script>
+    var xhttp = new XMLHttpRequest();
+    let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
+    xhttp.open("GET", url, true);
+    xhttp.send();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.response);
+            displayData(response);
+        }
+    };
 
-            var displayDiv = document.getElementById("display_id");
+    function displayData(data) {
+        var displayDiv = document.getElementById("display_id");
+        data = data.items;
 
-            data = data.items;
-
-            var table = "<table class='table'><thead><tr><th>ID</th><th>Nume</th><th>Prenume</th><th>Email</th></tr></thead><tbody>";
+        var table = "<table class='table'><thead><tr><th>Nume</th><th>Prenume</th><th>Email</th><td>Detalii</td></tr></thead><tbody>";
 
             for (var i = 0; i < data.length; i++) {
-                table += "<tr>";
-                table += "<td>" + data[i].jucator_id + "</td>";
-                table += "<td>" + data[i].nume + "</td>";
-                table += "<td>" + data[i].prenume + "</td>";
-                table += "<td>" + (data[i].email ? data[i].email : "Fara email inca") + "</td>";
-                table += "</tr>";
-            }
+        table += "<td>" + data[i].nume + "</td>";
+        table += "<td>" + data[i].prenume + "</td>";
+        table += "<td>" + (data[i].email ? data[i].email : "Fara email inca") + "</td>";
+        // Add the link as the last cell in the row
+        table += "<td><a href='jucator.htm?id="+ data[i].jucator_id + "'>View Details</a></td>";
+        table += "</tr>";
+    }
 
-            table += "</tbody></table>";
 
-            displayDiv.innerHTML = table;
-        }
-    </script>
+        table += "</tbody></table>";
+
+        displayDiv.innerHTML = table;
+    }
+  
+</script>
+
 </body>
 
 </html>
