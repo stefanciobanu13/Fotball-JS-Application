@@ -2,7 +2,6 @@ export const table = document.getElementById("teams");
 
 export function populateTable(value) {
   const table = document.getElementById("teams");
-  console.log(table)
   const emptyPosition = findFirstEmptyPosition();
 
   if (emptyPosition) {
@@ -20,9 +19,9 @@ export function populateTable(value) {
     cell.textContent = value;
    
     cell.appendChild(deleteIcon);
+
+    document.getElementById("input_selectPlayer").focus();
   }
-
-
 }
 
 export function clearTable() {
