@@ -44,6 +44,7 @@ function convertDateFormat(inputDate) {
   const month = parts[1];
   const day = parts[2];
   const formattedDate = `${day}.${month}.${year}`;
+
   return formattedDate;
 }
 
@@ -56,25 +57,9 @@ export const postRound = function postRound() {
     date: formatedDate,
     number: roundNumber,
   };
-  axios.post(`${url}rounds`, postData)
-    .then(response => {
-      console.log('Response:', response.data);
 
-      // get back the round
-      axios.get(`${url}rounds/number/${roundNumber}`)
-        .then(response => {
-          theRoundId = response.data.id;
-          console.log('Response:', response.data);
-        }).then(() => {
-          postTeams();
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+  console.log(postData)
+
 };
 
 export async function saveTeam(color) {

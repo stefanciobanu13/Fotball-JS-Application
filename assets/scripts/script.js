@@ -97,13 +97,6 @@ function addFinalsTeam(clasament) {
   ulFinalaMareEchipaDreaptaPlace.appendChild(ulEchipaDreaptaFinalaMare);
 }
 
-// Add event listener to delete-button
-table.addEventListener("click", function (event) {
-  if (event.target.classList.contains("delete-button")) {
-    const cell = event.target.parentNode;
-    removeValue(cell);
-  }
-});
 
 //screen the table data
 export const dataPlayer = [];

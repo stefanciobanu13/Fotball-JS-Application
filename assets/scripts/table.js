@@ -2,6 +2,7 @@ export const table = document.getElementById("teams");
 
 export function populateTable(value) {
   const table = document.getElementById("teams");
+  console.log(table)
   const emptyPosition = findFirstEmptyPosition();
 
   if (emptyPosition) {
@@ -10,11 +11,18 @@ export function populateTable(value) {
 
     const deleteIcon = document.createElement("i");
     deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
-
+   
+    deleteIcon.addEventListener("click", function () {
+      cell.innerHTML = "";
+    })
+   
     cell.innerHTML = "";
     cell.textContent = value;
+   
     cell.appendChild(deleteIcon);
   }
+
+
 }
 
 export function clearTable() {
