@@ -1,15 +1,20 @@
+import {jucatori} from "../scripts/app2.js";
+
 export const table = document.getElementById("teams");
 
 // Create an array to store the added players
 let addedPlayers = [];
 
+let devMode = false;
+
+// Function to populate the table with a player
 export function populateTable(value) {
   const table = document.getElementById("teams");
   const emptyPosition = findFirstEmptyPosition();
 
   // Check if the player is already added
   if (addedPlayers.includes(value)) {
-    alert('Jucatorul exista deja in baza de date');
+    alert('Jucatorul exista deja in lista de prezenta');
     return;
   }
 
@@ -27,7 +32,7 @@ export function populateTable(value) {
       if (index > -1) {
         addedPlayers.splice(index, 1);
       }
-    })
+    });
 
     cell.innerHTML = "";
     cell.textContent = value;
@@ -42,6 +47,26 @@ export function populateTable(value) {
   }
 }
 
+// Function to populate the table with a random player in dev mode
+export function populateTableDevMode() {
+  if (devMode) {
+    // Replace this with your logic to fetch random players from the database
+    const randomPlayer = getRandomPlayerFromDatabase();
+    populateTable(randomPlayer);
+  } else {
+    if(!devMode)
+      alert('Dev mod is not enabled')
+  }
+}
+
+// Function to get a random player from the database (replace this with your logic)
+function getRandomPlayerFromDatabase() {
+  // Replace this with your logic to fetch a random player from the database
+  const randomPlayers = jucatori // Sample players
+  const randomIndex = Math.floor(Math.random() * randomPlayers.length);
+  return randomPlayers[randomIndex];
+}
+
 
 export function clearTable() {
   var table = document.getElementById("clasamentBody");
@@ -53,9 +78,21 @@ export const submitButton = document.getElementById("button_selectPlayer");
 submitButton.addEventListener("click", function () {
   const input = document.getElementById("input_selectPlayer");
   const selectedValue = input.value;
-  console.log(selectedValue)
 
-  populateTable(selectedValue);
+
+  devMode = document.getElementById("devModeSwitch").checked;
+
+  if (devMode){
+    for(var i = 1; i <= 24 ; i++){
+      populateTableDevMode();
+    }
+
+
+   
+  }
+  else{
+    populateTable(selectedValue);
+  }
 
 });
 

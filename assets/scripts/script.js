@@ -119,6 +119,8 @@ getDataButton.addEventListener("click", function () {
     dataPlayer.push(rowData);
   }
 
+  console.log(dataPlayer)
+
   getDataButton.remove();
   removeDeleteButtons();
 });
