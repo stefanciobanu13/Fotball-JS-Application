@@ -3,13 +3,6 @@ const selectPlayerBtn = document.getElementById("button_selectPlayer");
 
 let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
 
-selectPlayerBtn.addEventListener("click", () => {
- console.log('inside event listener')
- const input = document.getElementById("input_selectPlayer");
-
- // Clear the input value
- input.value = "";
-});
 
 
 function getPlayers() {

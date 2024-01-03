@@ -23,7 +23,9 @@ export function populateTable(value) {
     cell.appendChild(deleteIcon);
 
     document.getElementById("input_selectPlayer").focus();
+    document.getElementById("input_selectPlayer").value = '';
   }
+
 }
 
 export function clearTable() {
@@ -39,6 +41,7 @@ submitButton.addEventListener("click", function () {
   console.log(selectedValue)
 
   populateTable(selectedValue);
+
 });
 
 
