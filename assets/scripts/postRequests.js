@@ -2,7 +2,7 @@ import { clasament } from "./clasament.js";
 import { dataPlayer } from "./script.js";
 import { countNonNullLi } from "./helpers.js";
 
-const url = "http://localhost:8083/"
+const url = "https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaeditie"
 
 let roundNumber;
 let theRoundId;
@@ -12,55 +12,9 @@ let teamGreenId;
 let teamBlueId;
 let teamGrayId;
 
-// listener to the forms submit event
-document.getElementById("myForm").addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const form = event.target;
-  const formData = new FormData(form);
-
-  fetch(form.action, {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-  return true;
-});
 
 
-function convertDateFormat(inputDate) {
-  //convert the data format 
-  const parts = inputDate.split('-');
-  if (parts.length !== 3) {
-    throw new Error('Invalid date format');
-  }
-  const year = parts[0];
-  const month = parts[1];
-  const day = parts[2];
-  const formattedDate = `${day}.${month}.${year}`;
 
-  return formattedDate;
-}
-
-export const postRound = function postRound() {
-  // this method will trigger the saving of data in db
-  const roundDate = document.getElementById("data_editie").value;
-  const formatedDate = convertDateFormat(roundDate);
-  roundNumber = document.getElementById("numar_editie").value;
-  const postData = {
-    date: formatedDate,
-    number: roundNumber,
-  };
-
-  console.log(postData)
-
-};
 
 export async function saveTeam(color) {
 
@@ -131,6 +85,8 @@ async function assignTeamsId(color) {
       assignTeamsId(color);
     });
 }
+
+
 
 export async function postTeams() {
   const green = "Verde";

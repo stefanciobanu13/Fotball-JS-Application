@@ -27,15 +27,12 @@
       crossorigin="anonymous"
     ></script>
 
-    <script src="assets/scripts/app2.js" type="module"></script>
-    <script src="assets/scripts/postRequests.js" type="module"></script>
-    <script src="assets/scripts/script.js" type="module"></script>
     <script src="assets/scripts/clasament.js" type="module"></script>
     <script src="assets/scripts/helpers.js" type="module"></script>
     <script src="assets/scripts/match.js" type="module"></script>
     <script src="assets/scripts/table.js" type="module"></script>
     <script src="assets/scripts/golgheteri.js" type="module"></script>
-    <script src="assets/scripts/editie_post.js" type="module"></script>
+    <script src="assets/scripts/editie_get.js" type="module"></script>
 
 
     <nav
@@ -79,9 +76,8 @@
 
     <div class="informatii-editie">
       <h1>Informatii editie</h1>
-      <form        
-      class="form-grup"
-
+      <form
+        class="form-control"
         id="myForm"
       >
         <div class="row">
@@ -89,6 +85,7 @@
             <label for="data_editie">Data editie</label>
             <input
               type="date"
+              class="form-control"
               id="data_editie"
               name="data_editie"
             />
@@ -98,21 +95,11 @@
             <input
               type="number"
               class="form-control"
-              
               id="numar_editie"
               name="numar_editie"
             />
           </div>
-          <div class="col-auto">
-            <input type="submit" id="introduEditie" class="btn btn-primary" value="Creaza editie">
-          </div>
-
-          <div id="successMessage" style="display: none;" class="alert alert-success mt-3" role="alert">
-            Editia a fost creata cu succes!
-        </div>
-        <div id="errorMessage" style="display: none;" class="alert alert-danger mt-3" role="alert">
-            A fost o eroare la inregistrare.
-        </div>
+  
         </div>
       </form>
     </div>
@@ -120,23 +107,10 @@
     <br /><br />
 
     <h1>Prezenta</h1>
-    <div class="autocomplete">
-      <input
-        id="input_selectPlayer"
-        placeholder="Player Name"
-        list="playersList"
-      />
-      <datalist class="dropDown" id="playersList"> </datalist>
-      <button type="submit" id="button_selectPlayer" class="btn btn-primary">
-        Introdu
-      </button>
-    </div>
+  
 
-    <br /><br />
-    <br /><br />
-    <br /><br />
 
-    <button id="getDataButton">Submit</button>
+
     <table id="teams">
       <tr>
         <th>Portocaliu</th>
@@ -190,23 +164,8 @@
       <div class="etapa" id="etapa1">
         <h3>Etapa 1</h3>
 
-        <input
-          type="text"
-          id="searchInput1"
-          placeholder="Introduceți o valoare"
-        />
         <br />
-        <button id="buttonAuto1">Introdu la echipa proprie</button>
-        <button id="button1">Introdu la alta echipa</button>
-        <ul id="recomandari1" class="recomandari"></ul>
-        <br />
-        <select id="selectare1" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari8" class="recomandari"></ul>
+       
 
         <div class="match" id="match1">
           <div class="match-info">
@@ -250,23 +209,8 @@
       </div>
       <div class="etapa" id="etapa2">
         <h3>Etapa 2</h3>
-        <input
-          type="text"
-          id="searchInput2"
-          placeholder="Introduceți o valoare"
-        />
+       
         <br />
-        <button id="buttonAuto2">Introdu la echipa proprie</button>
-        <button id="button2">Introdu la alta echipa</button>
-        <ul id="recomandari2" class="recomandari"></ul>
-        <br />
-        <select id="selectare2" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari9" class="recomandari"></ul>
 
         <div class="match" id="match3">
           <div class="match-info">
@@ -317,17 +261,6 @@
           placeholder="Introduceți o valoare"
         />
         <br />
-        <button id="buttonAuto3">Introdu la echipa proprie</button>
-        <button id="button3">Introdu la alta echipa</button>
-        <ul id="recomandari3" class="recomandari"></ul>
-        <br />
-        <select id="selectare3" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari10" class="recomandari"></ul>
 
         <div class="match" id="match5">
           <div class="match-info">
@@ -371,24 +304,9 @@
       </div>
       <h2>Retur</h2>
       <div class="etapa" id="etapa4">
-        <h3>Etapa 4</h3>
-        <input
-          type="text"
-          id="searchInput4"
-          placeholder="Introduceți o valoare"
-        />
+        <h3>Etapa 4</h3> 
         <br />
-        <button id="buttonAuto4">Introdu la echipa proprie</button>
-        <button id="button4">Introdu la alta echipa</button>
-        <ul id="recomandari4" class="recomandari"></ul>
-        <br />
-        <select id="selectare4" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari11" class="recomandari"></ul>
+
 
         <div class="match" id="match7">
           <div class="match-info">
@@ -433,23 +351,10 @@
 
       <div class="etapa" id="etapa5">
         <h3>Etapa 5</h3>
-        <input
-          type="text"
-          id="searchInput5"
-          placeholder="Introduceți o valoare"
-        />
+      
         <br />
-        <button id="buttonAuto5">Introdu la echipa proprie</button>
-        <button id="button5">Introdu la alta echipa</button>
-        <ul id="recomandari5" class="recomandari"></ul>
-        <br />
-        <select id="selectare5" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari12" class="recomandari"></ul>
+
+        
 
         <div class="match" id="match9">
           <div class="match-info">
@@ -494,23 +399,9 @@
 
       <div class="etapa" id="etapa6">
         <h3>Etapa 6</h3>
-        <input
-          type="text"
-          id="searchInput6"
-          placeholder="Introduceți o valoare"
-        />
+
         <br />
-        <button id="buttonAuto6">Introdu la echipa proprie</button>
-        <button id="button6">Introdu la alta echipa</button>
-        <ul id="recomandari6" class="recomandari"></ul>
-        <br />
-        <select id="selectare6" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari6" class="recomandari"></ul>
+     
 
         <div class="match" id="match11">
           <div class="match-info">
@@ -579,24 +470,9 @@
       </div>
 
       <div class="finale" id="etapa7">
-        <input
-          type="text"
-          id="searchInput7"
-          placeholder="Introduceți o valoare"
-        />
+ 
         <br />
-        <button id="buttonAuto7">Introdu la echipa proprie</button>
-        <button id="button7">Introdu la alta echipa</button>
-        <ul id="recomandari7" class="recomandari"></ul>
-        <br />
-        <select id="selectare7" class="selectare">
-          <option value="Verde">Verde</option>
-          <option value="Albastru">Albastru</option>
-          <option value="Portocaliu">Portocaliu</option>
-          <option value="Gri">Gri</option>
-        </select>
-        <ul id="recomandari7" class="recomandari"></ul>
-
+           
         <h3>Finala Mica</h3>
         <div class="finala" id="finala-mica">
           <div class="match-info">

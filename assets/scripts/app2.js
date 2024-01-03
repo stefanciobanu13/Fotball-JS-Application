@@ -1,9 +1,5 @@
-import { postRound, postGoals } from "./postRequests.js";
 
 const selectPlayerBtn = document.getElementById("button_selectPlayer");
-const saveFormBtn = document.getElementById("salveazaEditie")
-
-
 
 let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
 
@@ -15,11 +11,6 @@ selectPlayerBtn.addEventListener("click", () => {
  input.value = "";
 });
 
-function clearData(event) {
- const btn = document.getElementById('btnId');
- console.log(`the btn is ${btn}`)
- btn.innerHTML = "";
-}
 
 function getPlayers() {
     //get the players and populate the drop down list of players
@@ -42,15 +33,9 @@ function getPlayers() {
     };
 }
 
-async function saveTheForm() {
- postRound();
-}
 
-saveFormBtn.addEventListener("click", saveTheForm);
+
 getPlayers();
-
-
-
 
 
 

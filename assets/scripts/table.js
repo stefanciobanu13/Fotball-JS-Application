@@ -4,6 +4,8 @@ export function populateTable(value) {
   const table = document.getElementById("teams");
   const emptyPosition = findFirstEmptyPosition();
 
+  console.log(value);
+  
   if (emptyPosition) {
     const { row, column } = emptyPosition;
     const cell = table.rows[row].cells[column];
@@ -29,12 +31,17 @@ export function clearTable() {
   table.innerHTML = "";
 }
 
+
 export const submitButton = document.getElementById("button_selectPlayer");
 submitButton.addEventListener("click", function () {
   const input = document.getElementById("input_selectPlayer");
   const selectedValue = input.value;
+  console.log(selectedValue)
+
   populateTable(selectedValue);
 });
+
+
 
 export function checkTableContent() {
   const table = document.getElementById("teams");

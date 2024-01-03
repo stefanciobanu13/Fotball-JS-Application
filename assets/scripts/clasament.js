@@ -229,7 +229,7 @@ export function updateClasament(match) {
       }
     }
   } catch (error) {
-    console.error('An error occurred in updateClasament:', error.message);
+    console.log('An error occurred in updateClasament:', error.message);
   }
 }
 

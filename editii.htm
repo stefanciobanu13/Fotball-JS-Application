@@ -75,33 +75,21 @@
             var displayDiv = document.getElementById("display_id");
             data = data.items;
     
-            var table = "<table class='table'><thead><tr><th>Numar Editie</th><th>Data</th></tr></thead><tbody>";
+            var table = "<table class='table'><thead><tr><th>Numar Editie</th><th>Data</th><td>Detalii</th></tr></thead><tbody>";
     
             for (var i = 0; i < data.length; i++) {
                 table += "<tr id='row_" + data[i].numar_editie + "'>";
                 table += "<td>" + data[i].numar_editie + "</td>";
                 table += "<td>" + data[i].data_editie + "</td>";
+                table += "<td><a href='editie.htm?id="+ data[i].numar_editie + "'>View Details</a></td>";
                 table += "</tr>";
             }
     
             table += "</tbody></table>";
     
             displayDiv.innerHTML = table;
-    
-            // Add click event listener to rows
-            data.forEach(function (edition) {
-                var row = document.getElementById('row_' + edition.numar_editie);
-                row.addEventListener('click', function () {
-                    navigateToEditionPage(edition.numar_editie); // Pass the specific edition ID or data to the function
-                });
-            });
         }
     
-        // Function to navigate to the specific edition's page
-        function navigateToEditionPage(editionId) {
-            // Redirect to the respective edition's page using the ID or data
-            window.location.href = "pagina-editie.htm?id=" + editionId; // Modify the URL as needed
-        }
     </script>
 </body>
 
