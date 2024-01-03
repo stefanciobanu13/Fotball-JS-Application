@@ -35,6 +35,8 @@
     <script src="assets/scripts/match.js" type="module"></script>
     <script src="assets/scripts/table.js" type="module"></script>
     <script src="assets/scripts/golgheteri.js" type="module"></script>
+    <script src="assets/scripts/editie_post.js" type="module"></script>
+
 
     <nav
       class="navbar bg-dark border-bottom border-bottom-dark"
@@ -77,8 +79,9 @@
 
     <div class="informatii-editie">
       <h1>Informatii editie</h1>
-      <form
-        class="form-grup"
+      <form        
+      class="form-grup"
+
         id="myForm"
       >
         <div class="row">
@@ -86,7 +89,6 @@
             <label for="data_editie">Data editie</label>
             <input
               type="date"
-              class="form-control"
               id="data_editie"
               name="data_editie"
             />
@@ -96,33 +98,36 @@
             <input
               type="number"
               class="form-control"
+              
               id="numar_editie"
               name="numar_editie"
             />
           </div>
           <div class="col-auto">
-            <button type="submit" id="introduEditie" class="btn btn-primary">
-              Submit
-            </button>
+            <input type="submit" id="introduEditie" class="btn btn-primary" value="Creaza editie">
           </div>
+
+          <div id="successMessage" style="display: none;" class="alert alert-success mt-3" role="alert">
+            Editia a fost creata cu succes!
+        </div>
+        <div id="errorMessage" style="display: none;" class="alert alert-danger mt-3" role="alert">
+            A fost o eroare la inregistrare.
+        </div>
         </div>
       </form>
     </div>
 
-    <br /><br />
     <br /><br />
 
     <h1>Prezenta</h1>
     <div class="autocomplete">
       <input
         id="input_selectPlayer"
-        name="myCountry"
         placeholder="Player Name"
-        list="playersList",
-        onclick="this.value=''"
+        list="playersList"
       />
       <datalist class="dropDown" id="playersList"> </datalist>
-      <button type="submit" id="button_selectPlayer" class="btn btn-primary" >
+      <button type="submit" id="button_selectPlayer" class="btn btn-primary">
         Introdu
       </button>
     </div>

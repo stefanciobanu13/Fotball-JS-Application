@@ -1,32 +1,47 @@
 export const table = document.getElementById("teams");
 
+// Create an array to store the added players
+let addedPlayers = [];
+
 export function populateTable(value) {
   const table = document.getElementById("teams");
   const emptyPosition = findFirstEmptyPosition();
 
-  console.log(value);
-  
+  // Check if the player is already added
+  if (addedPlayers.includes(value)) {
+    alert('Jucatorul exista deja in baza de date');
+    return;
+  }
+
   if (emptyPosition) {
     const { row, column } = emptyPosition;
     const cell = table.rows[row].cells[column];
 
     const deleteIcon = document.createElement("i");
     deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
-   
+
     deleteIcon.addEventListener("click", function () {
       cell.innerHTML = "";
+      // Remove the player from the array when deleted from the table
+      const index = addedPlayers.indexOf(value);
+      if (index > -1) {
+        addedPlayers.splice(index, 1);
+      }
     })
-   
+
     cell.innerHTML = "";
     cell.textContent = value;
-   
+
     cell.appendChild(deleteIcon);
 
     document.getElementById("input_selectPlayer").focus();
     document.getElementById("input_selectPlayer").value = '';
-  }
 
+    // Add the player to the array
+    addedPlayers.push(value);
+  }
 }
+
 
 export function clearTable() {
   var table = document.getElementById("clasamentBody");

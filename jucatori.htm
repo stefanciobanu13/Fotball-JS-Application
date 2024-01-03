@@ -2,20 +2,64 @@
 <html>
 
 <head>
-    <title>Jucatori</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jucator</title>
 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Campionat Takeaway Soccer</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        inteGrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
 
+    <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- Your custom CSS -->
     <link rel="stylesheet" href="assets/style/css/style2.css">
+
+    <style>
+        /* Add your custom styles for the table */
+        #dataTable {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+            white-space: nowrap;
+        }
+
+        #dataTable th,
+        #dataTable td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #dataTable thead {
+            background-color: #f2f2f2;
+        }
+
+        #dataTable tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        #dataTable a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </head>
 
 <body>
+  
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         inteGrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
@@ -74,25 +118,31 @@
     };
 
     function displayData(data) {
-        var displayDiv = document.getElementById("display_id");
-        data = data.items;
+    var displayDiv = document.getElementById("display_id");
+    data = data.items;
 
-        var table = "<table class='table'><thead><tr><th>Nume</th><th>Prenume</th><th>Email</th><td>Detalii</td></tr></thead><tbody>";
+    var table = "<table class='table' id='dataTable'><thead><tr><th>Nume</th><th>Prenume</th><th>Email</th><td>Detalii</td></tr></thead><tbody>";
 
-            for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
+        table += "<tr>";
         table += "<td>" + data[i].nume + "</td>";
         table += "<td>" + data[i].prenume + "</td>";
         table += "<td>" + (data[i].email ? data[i].email : "Fara email inca") + "</td>";
         // Add the link as the last cell in the row
-        table += "<td><a href='jucator.htm?id="+ data[i].jucator_id + "'>View Details</a></td>";
+        table += "<td><a href='jucator.htm?id=" + data[i].jucator_id + "'>View Details</a></td>";
         table += "</tr>";
     }
 
+    table += "</tbody></table>";
 
-        table += "</tbody></table>";
+    displayDiv.innerHTML = table;
 
-        displayDiv.innerHTML = table;
-    }
+    // Initialize DataTable
+    $(document).ready(function () {
+        $('#dataTable').DataTable();
+    });
+}
+
   
 </script>
 
