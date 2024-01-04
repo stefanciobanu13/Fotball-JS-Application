@@ -14,7 +14,7 @@ export function populateTable(value) {
 
   // Check if the player is already added
   if (addedPlayers.includes(value)) {
-    alert('Jucatorul exista deja in lista de prezenta');
+    //alert('Jucatorul exista deja in lista de prezenta');
     return;
   }
 
@@ -86,9 +86,6 @@ submitButton.addEventListener("click", function () {
     for(var i = 1; i <= 24 ; i++){
       populateTableDevMode();
     }
-
-
-   
   }
   else{
     populateTable(selectedValue);

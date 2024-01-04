@@ -1,11 +1,9 @@
 
-const selectPlayerBtn = document.getElementById("button_selectPlayer");
-
-let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
+export let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
 
 export const jucatori = []
 
-function getPlayers() {
+export function getPlayers() {
     //get the players and populate the drop down list of players
     var xhttp = new XMLHttpRequest();
 
@@ -26,7 +24,7 @@ function getPlayers() {
         }
     };
 
-    return playersList;
+    return jucatori;
 }
 
 getPlayers();
