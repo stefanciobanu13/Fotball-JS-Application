@@ -1,4 +1,5 @@
 import { jucatori } from "../scripts/app2.js";
+import {dataPlayer} from "../scripts/script.js"
 
 var culori = [
   {
@@ -72,10 +73,9 @@ document
             .then((response) => response.json())
             .then((result) =>  culoare.id = result.id_echipa)
             .catch((error) => console.log("error", error));
-        }),
-        
-        console.log(culori)
 
+            getPlayerTeam(culoare_string)
+        }),
         );
 
       document.getElementById("successMessage").style.display = "block";
@@ -89,33 +89,34 @@ document
   });
 
 
-function getPlayerTeam(name, id) {
-    for (var i = 0; i < dataPlayer.length; i++) {
-      var playerInfo = dataPlayer[i];
-      for (var culoare in playerInfo) {
-        if (playerInfo[culoare] === name) {
-          console.log(`Jucatorul ${playerInfo[culoare]} ( ${id} )  joaca la ${culoare}`)
-          culoare = culoare.toLowerCase();
+async function getPlayerTeam(name) {
+  for (const playerInfo of dataPlayer) {
+    const playerName = playerInfo[name[0].toUpperCase() + name.slice(1)];
+    console.log(name[0].toUpperCase() + name.slice(1))
+    
+    if (playerName) {
+      const id_culoare = culori.find(color => color.culoare === name)?.id;
   
-          var id_culoare;
-  
-          for (var color in culori) {
-            if (color === culoare) {
-              id_culoare = color.id;
-            }
-          }
-  
-          fetch(`https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaprezenta?jucator_id=${id}&id_echipa=${id_culoare}`, 
-          {
-            method: "GET",
-            redirect: "follow",
-            mode:"cors"
-          })
-           .then(response => response.text())
+      const id = Object.keys(jucatori).find(playerId => jucatori[playerId] === playerName);
+      
+      //console.log(id,id_culoare)
+
+      var raw = JSON.stringify({
+        "jucator_id": id,
+        "id_echipa": id_culoare
+     });
+
+      if (id && id_culoare) {
+        fetch(`https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaprezenta?jucator_id=${id}&id_echipa=${id_culoare}}`, {
+          method: "POST",
+          redirect: "follow",
+          mode: "cors",
+          body: raw,
+        })
+          .then(response => response.text())
           .then(result => console.log(result))
           .catch(error => console.log('error', error));
-        }
       }
     }
-  
   }
+}

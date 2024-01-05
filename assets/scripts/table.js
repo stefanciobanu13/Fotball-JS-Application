@@ -1,4 +1,6 @@
-import {jucatori} from "../scripts/app2.js";
+import { jucatori2} from "../scripts/app2.js";
+
+const jucatori = jucatori2
 
 export const table = document.getElementById("teams");
 
