@@ -1,7 +1,6 @@
-
 export let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
 
-export const jucatori = []
+export const jucatori = {}
 
 export function getPlayers() {
     //get the players and populate the drop down list of players
@@ -18,12 +17,13 @@ export function getPlayers() {
 
                 const option = document.createElement('option');
                 option.value = `${player.nume} ${player.prenume}`;
-                jucatori.push(`${player.nume} ${player.prenume}`)
+                jucatori[player.jucator_id] = (`${player.nume} ${player.prenume}`)
                 playersList.appendChild(option);
             });
         }
     };
 
+    console.log(jucatori)
     return jucatori;
 }
 

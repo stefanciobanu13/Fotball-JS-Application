@@ -1,3 +1,5 @@
+import { jucatori } from "../scripts/app2.js";
+
 var culori = [
   {
     culoare: "portocaliu",
@@ -26,7 +28,7 @@ document
     const numar_editie = document.getElementById("numar_editie").value;
 
     try {
-      const response = await fetch(
+      await fetch(
         `https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaeditie?numar_editie=${numar_editie}&data_editie=${data_editie}`,
          {
           method: "POST",
@@ -67,11 +69,14 @@ document
               mode:"cors"
             }
           )
-            .then((response) => response.text())
-            .then((result) => console.log(result))
+            .then((response) => response.json())
+            .then((result) =>  culoare.id = result.id_echipa)
             .catch((error) => console.log("error", error));
-        })
-      );
+        }),
+        
+        console.log(culori)
+
+        );
 
       document.getElementById("successMessage").style.display = "block";
       document.getElementById("errorMessage").style.display = "none";
@@ -82,3 +87,35 @@ document
       document.getElementById("successMessage").style.display = "none";
     }
   });
+
+
+function getPlayerTeam(name, id) {
+    for (var i = 0; i < dataPlayer.length; i++) {
+      var playerInfo = dataPlayer[i];
+      for (var culoare in playerInfo) {
+        if (playerInfo[culoare] === name) {
+          console.log(`Jucatorul ${playerInfo[culoare]} ( ${id} )  joaca la ${culoare}`)
+          culoare = culoare.toLowerCase();
+  
+          var id_culoare;
+  
+          for (var color in culori) {
+            if (color === culoare) {
+              id_culoare = color.id;
+            }
+          }
+  
+          fetch(`https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaprezenta?jucator_id=${id}&id_echipa=${id_culoare}`, 
+          {
+            method: "GET",
+            redirect: "follow",
+            mode:"cors"
+          })
+           .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+        }
+      }
+    }
+  
+  }
