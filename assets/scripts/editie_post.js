@@ -37,7 +37,7 @@ document
          }
       )         
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      //.then((result) => console.log(result))
       .catch((error) => console.log("error", error));
 
       // nu prea vad ce sens are chestia asta cezar, indiferent de ce zice acest `if`
@@ -95,11 +95,9 @@ async function getPlayerTeam(name) {
     console.log(name[0].toUpperCase() + name.slice(1))
     
     if (playerName) {
-    const id_culoare = parseInt(culori.find(color => color.culoare === name)?.id, 10);
-  
-    const id = parseInt(Object.keys(jucatori).find(playerId => jucatori[playerId] === playerName), 10);
+    const id_culoare = (culori.find(color => color.culoare === name)?.id);
+    const id = parseInt(Object.keys(jucatori).find(playerId => jucatori[playerId] === playerName));
       
-      //console.log(id,id_culoare)
 
       var raw = JSON.stringify({
         "jucator_id": id,
@@ -107,14 +105,14 @@ async function getPlayerTeam(name) {
      });
 
       if (id && id_culoare) {
-        fetch(`https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaprezenta?jucator_id=${id}&id_echipa=${id_culoare}}`, {
+        fetch(`https://iacademy2.oracle.com/ords/footballapp/psbd/adaugaprezenta?jucator_id=${id}&id_echipa=${id_culoare}`, {
           method: "POST",
           redirect: "follow",
           mode: "cors",
           body: raw,
         })
           .then(response => response.text())
-          .then(result => console.log(result))
+          //.then(result => console.log(result))
           .catch(error => console.log('error', error));
       }
     }

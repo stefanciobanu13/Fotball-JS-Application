@@ -10,8 +10,44 @@ xhttp.open("GET", url, true);
 xhttp.send();
 xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-        var editionData = JSON.parse(this.response);
-        displayEditionDetails(editionData);
+        var result = JSON.parse(this.response);
+        console.log(result.items)
+        // Mapping of colors to class names for table cells
+
+        const playerData = result.items;
+
+        var colorClasses = {
+            "Portocaliu": "orange",
+            "Verde": "green",
+            "Albastru": "blue",
+            "Gri": "grey"
+        };
+        
+        // Get the table element
+        var table = document.getElementById("teams");
+        
+        // Loop through the players and populate the table based on team colors
+        for (var i = 0; i < Math.ceil(playerData.length / 4); i++) {
+            var row = table.insertRow(-1); // Insert a new row at the end
+          
+            for (var j = i * 4; j < (i + 1) * 4 && j < playerData.length; j++) {
+              var player = playerData[j];
+              var td = row.insertCell(-1);
+          
+              if ((j + 1) % 4 === 0) {
+                td.className = colorClasses["Portocaliu"];
+              } else if ((j + 1) % 4 === 1) {
+                td.className = colorClasses["Verde"];
+              } else if ((j + 1) % 4 === 2) {
+                td.className = colorClasses["Albastru"];
+              } else {
+                td.className = colorClasses["Gri"];
+              }
+              
+              td.textContent = player.nume_jucator;
+            }
+          }
+  
     }
 };
 
