@@ -74,7 +74,7 @@ document
             .then((result) =>  culoare.id = result.id_echipa)
             .catch((error) => console.log("error", error));
 
-            getPlayerTeam(culoare_string)
+            await getPlayerTeam(culoare_string)
         }),
         );
 
@@ -95,9 +95,9 @@ async function getPlayerTeam(name) {
     console.log(name[0].toUpperCase() + name.slice(1))
     
     if (playerName) {
-      const id_culoare = culori.find(color => color.culoare === name)?.id;
+    const id_culoare = parseInt(culori.find(color => color.culoare === name)?.id, 10);
   
-      const id = Object.keys(jucatori).find(playerId => jucatori[playerId] === playerName);
+    const id = parseInt(Object.keys(jucatori).find(playerId => jucatori[playerId] === playerName), 10);
       
       //console.log(id,id_culoare)
 
