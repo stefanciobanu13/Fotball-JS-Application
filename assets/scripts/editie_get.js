@@ -15,6 +15,8 @@ xhttp.onreadystatechange = function () {
         // Mapping of colors to class names for table cells
         const playerData = result.items;
 
+        displayEditionDetails(playerData[0]);
+
         var colorClasses = {
             "Portocaliu": "orange",
             "Verde": "green",
@@ -25,9 +27,6 @@ xhttp.onreadystatechange = function () {
         // Get the table element
         var table = document.getElementById("teams");
                 
-        // Create header row with team colors
-        var header = table.insertRow(-1);
-
 
         // Initialize columns array
         var columns = {};
