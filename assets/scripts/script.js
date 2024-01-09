@@ -387,7 +387,6 @@ function addValueToList2(etapa) {
 
         var listClassName = "list-" + key;
         var list = document.querySelector("#etapa" + etapa + " ul." + listClassName);
-        console.log(`list: ${list}`)
 
         // lista are 5 elemente?
 
