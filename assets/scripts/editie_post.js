@@ -176,7 +176,7 @@ async function postMeciuri(numar_editie) {
 
   const finale = document.querySelectorAll(".finala");
 
-  finale.forEach(async (finala, index) => {
+  for (var [index, finala] of finale.entries()) {
     const leftTeamName = finala
       .querySelector(".left-team-info .team-name div")
       .textContent.trim()
@@ -204,31 +204,35 @@ async function postMeciuri(numar_editie) {
 
     index = index + 12
 
-    await fetch(
-      `https://iacademy2.oracle.com/ords/footballapp/psbd/adauga_meci?numar_meci=${
-        index + 1
-      }&numar_editie=${numar_editie}`,
-      {
-        method: "POST",
-        redirect: "follow",
-        mode: "cors",
-      }
-    )
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+    try {
+      // Adăugarea meciului pentru finale
+      const addMatchResponse = await fetch(
+        `https://iacademy2.oracle.com/ords/footballapp/psbd/adauga_meci?numar_meci=${index + 1}&numar_editie=${numar_editie}`,
+        {
+          method: "POST",
+          redirect: "follow",
+          mode: "cors",
+        }
+      );
+      const addMatchResult = await addMatchResponse.text();
+      console.log(addMatchResult);
 
-    const id_meci = await fetchData(numar_editie,index+1)
+      // Obținerea ID-ului meciului pentru finale
+      const id_meci = await fetchData(numar_editie, index + 1);
 
-    await performFetchCalls(
-      leftTeamIds,
-      rightTeamIds,
-      id_culoare_stanga,
-      id_culoare_dreapta,
-      id_meci,
-      index
-    );
-  });
+      // Apelul pentru performFetchCalls pentru finale
+      await performFetchCalls(
+        leftTeamIds,
+        rightTeamIds,
+        id_culoare_stanga,
+        id_culoare_dreapta,
+        id_meci,
+        index
+      );
+    } catch (error) {
+      console.error("Error in processing final match:", error);
+    }
+  }
 
 }
 
@@ -327,24 +331,33 @@ async function fetchJucatorId(nume, prenume) {
 async function fetchData(numar_editie, index) {
   try {
     const response = await fetch(
-      `https:iacademy2.oracle.com/ords/footballapp/psbd/meci/${numar_editie}/${index}`,
+      `https://iacademy2.oracle.com/ords/footballapp/psbd/meci/${numar_editie}/${index}`,
       {
         method: "GET",
-        redirect: "follow",
-        mode: "cors",
-      }
+        redirect: "follow",      }
     );
 
-    const result = await response.text();
-    console.log(result); // Log the result
+    if (!response.ok) {
+      // Check if the response status is not OK (e.g., 404 Not Found)
+      throw new Error(`Failed to fetch data. Status: ${response.status}`);
+    }
 
-    // Parse the JSON if the response is JSON, then access id_meci
-    const parsedResult = JSON.parse(result);
-    const id_meci = parsedResult.id_meci;
+    const contentType = response.headers.get("content-type");
 
-    return id_meci; // Return the id_meci value
+    if (contentType && contentType.includes("application/json")) {
+      // If the response is JSON, parse it and access id_meci
+      const parsedResult = await response.json();
+      const id_meci = parsedResult.id_meci;
+      return id_meci;
+    } else {
+      // If the response is not JSON, handle it accordingly
+      console.log("Received non-JSON response:", await response.text());
+      // You might want to return a default value or handle it in a different way
+      return null;
+    }
   } catch (error) {
-    console.log("error", error);
+    console.error("Error fetching data:", error);
     throw error; // Throw the error to handle it outside this function if needed
   }
 }
+

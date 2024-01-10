@@ -21,7 +21,7 @@ export function getPlayers() {
                 jucatori[player.jucator_id] = (`${player.nume} ${player.prenume}`)
                 jucatori2.push(`${player.nume} ${player.prenume}`)
 
-                playersList.appendChild(option);
+                //playersList.appendChild(option);
             });
         }
     };

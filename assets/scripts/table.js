@@ -1,4 +1,4 @@
-import { jucatori2} from "../scripts/app2.js";
+import { jucatori2 } from "../scripts/app2.js";
 
 const jucatori = jucatori2
 
