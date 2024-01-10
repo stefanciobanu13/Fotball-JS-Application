@@ -381,7 +381,7 @@ function addValueToList2(etapa) {
   }
 }
 
-export function updateFinals() {
+export  async function updateFinals() {
   const finale = document.querySelectorAll(".finala");
   finale.forEach((finala) => {
     const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
@@ -447,32 +447,38 @@ export function removeTableRows(tableId) {
 function addGoalScorerRows(names, finalGoals, total) {
   const tableBody = document.getElementById("golgheteryBody");
 
-  tableBody.innerHTML = "";
-
-  // Filter out players with a total of 0
+  // Filter out players with a total of 0 and exclude the ones with empty names
   const filteredData = names
-    .map((name, index) => ({
-      name,
-      finalGoals: finalGoals[index],
-      total: total[index],
-    }))
-    .filter((data) => data.total > 0);
+    .map((name, index) => ({ name, finalGoals: finalGoals[index], total: total[index] }))
+    .filter((data) => data.total > 0 && data.name.trim() !== "");
 
   // Sort filtered data in descending order based on the 'total' value
-  const sortedData = filteredData.sort((a, b) => b.total - a.total);
+  const sortedData = filteredData.sort((a, b) => {
+    const aCount = names.filter((name) => name === a.name).length;
+    const bCount = names.filter((name) => name === b.name).length;
+
+    const aFinalCount = finalGoals.filter((goal) => goal === a.finalGoals).length;
+    const bFinalCount = finalGoals.filter((goal) => goal === b.finalGoals).length;
+
+    return aCount === bCount ? (aFinalCount === bFinalCount ? 0 : aFinalCount > bFinalCount ? 1 : -1) : bCount - aCount;
+  });
+
+  // Clear the existing table rows
+  tableBody.innerHTML = "";
 
   // Loop through the sorted data and add rows to the table
   sortedData.forEach((data, index) => {
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
-    <td>${index + 1}</td>
-    <td>${data.name}</td>
-    <td>${data.finalGoals}</td>
-    <td>${data.total}</td>
+      <td>${index + 1}</td>
+      <td>${data.name}</td>
+      <td>${data.finalGoals}</td>
+      <td>${data.total}</td>
     `;
     tableBody.appendChild(newRow);
   });
 }
+
 
 function addAutoGoalsScorers(names, total) {
   const tableBody = document.getElementById("autogolgheteriBody");
