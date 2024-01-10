@@ -2,6 +2,7 @@ import * as cls from "./clasament.js";
 import {clearTable} from "./table.js"
 import { countNonNullLi } from "./helpers.js";
 import * as script from "./script.js";
+import { buildGolgheteri } from "./golgheteri.js";
 
 // Get the edition number from the URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -42,64 +43,30 @@ xhttp.onreadystatechange = function () {
     });
 
     const marcatori = {};
+    const marcatori_finale = {};
 
     // Loop through the players and populate the columns
     playerData.forEach(function (player) {
-      if (player.stare_jucator === "Prezent")
-        columns[player.culoare_echipa].push(player.nume_jucator);
-      else if (!marcatori[player.numar_meci]) {
-        // If the key doesn't exist, create it and set the value
-        marcatori[
-          player.numar_meci
-        ] = `${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
-      } else {
-        // If the key exists, append the value to the existing one
-        marcatori[
-          player.numar_meci
-        ] += `, ${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
-      }
+        if (player.stare_jucator === "Prezent") {
+          columns[player.culoare_echipa].push(player.nume_jucator);
+        } else {
+          const targetMarcatori = player.numar_meci < 13 ? marcatori : marcatori_finale;
+          const keyExists = targetMarcatori[player.numar_meci];
+      
+          if (!keyExists) {
+            targetMarcatori[player.numar_meci] = `${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
+          } else {
+            targetMarcatori[player.numar_meci] += `, ${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
+          }
+        }
     });
+      
 
     console.log(marcatori);
+    console.log(marcatori_finale)
 
-    for (const [key, values] of Object.entries(marcatori)) {
-      const info_meci = values.split(",");
-      // Filter players for match 1 and the green team
-      console.log(info_meci);
+    processMarcatori(marcatori,marcatori_finale)
 
-      var meci;
-
-      info_meci.forEach((info_marcator) => {
-        info_marcator = info_marcator.split("_");
-        console.log(info_marcator);
-
-        if (key <= 12) {
-          meci = document.getElementById(`match${key}`);
-          console.log(meci.querySelector(`ul.list-${info_marcator[2]}`));
-          for (var nr_goals = 1; nr_goals <= info_marcator[0]; nr_goals++)
-            adaugaJucatorInList(
-              meci,
-              info_marcator[0],
-              info_marcator[1],
-              info_marcator[2],
-              key
-            );
-        } else if (key == 13) meci = document.getElementById(`finala-mica`);
-        else meci = document.getElementById(`finala-mare`);
-      });
-    }
-    const matches = document.querySelectorAll(".match");
-  
-    matches.forEach((match) => {  
-      const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
-      const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
-
-      const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
-      const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
-
-      const scoreElement = match.querySelector(".scor");
-      scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
-    }, this);
 
     // Find the maximum length among columns
     var maxLength = Math.max(
@@ -120,6 +87,104 @@ xhttp.onreadystatechange = function () {
   updateScoreMatch();
 };
 
+async function updateMatches(){
+    const matches = document.querySelectorAll(".match");
+    
+    matches.forEach((match) => {  
+    const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
+    const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
+
+    const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
+    const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
+
+    const scoreElement = match.querySelector(".scor");
+    scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
+    }, this);
+}
+
+// Function to process marcatori for matches
+async function processMarcatoriMatches(marcatori) {
+    for (const [key, values] of Object.entries(marcatori)) {
+      const info_meci = values.split(",");
+      // Filter players for match 1 and the green team
+      console.log(info_meci);
+  
+      info_meci.forEach((info_marcator) => {
+        info_marcator = info_marcator.split("_");
+        console.log("info: " + info_marcator);
+  
+        var meci;
+  
+        if (key <= 12) {
+          meci = document.getElementById(`match${key}`);
+          console.log(meci)
+        }
+  
+        if (meci) {
+          for (let nr_goals = 1; nr_goals <= info_marcator[0]; nr_goals++) {
+            adaugaJucatorInList(
+              meci,
+              info_marcator[0],
+              info_marcator[1],
+              info_marcator[2],
+              key
+            );
+          }
+        }
+      });
+    }
+  }
+  
+  // ... (rest of the existing code)
+  
+  // Function to process marcatori for finals
+  async function processMarcatoriFinals(marcatori_finale) {
+    for (const [key, values] of Object.entries(marcatori_finale)) {
+      const info_meci = values.split(",");
+      // Filter players for match 1 and the green team
+      console.log(info_meci);
+  
+      info_meci.forEach((info_marcator) => {
+        info_marcator = info_marcator.split("_");
+        console.log("info: " + info_marcator);
+  
+        var meci;
+  
+        if (key == 13) {
+          meci = document.querySelector('#finala-mica')
+        } else {
+          meci = document.querySelector('#finala-mare')
+        }
+  
+        console.log(meci,key)
+  
+        if (meci) {
+          for (let nr_goals = 1; nr_goals <= info_marcator[0]; nr_goals++) {
+            adaugaJucatorInList(
+              meci,
+              info_marcator[0],
+              info_marcator[1],
+              info_marcator[2],
+              key
+            );
+          }
+        }
+      });
+    }
+  }
+  
+  // Ensure sequential execution using async/await
+  async function processMarcatori(marcatori, marcatori_finale) {
+    await processMarcatoriMatches(marcatori);
+    await updateMatches();
+    await processMarcatoriFinals(marcatori_finale);
+    await script.updateFinals();
+    await buildGolgheteri();
+}
+  
+
+
+
 // Function to display the edition details
 function displayEditionDetails(edition) {
   var date_picker = document.getElementById("data_editie");
@@ -135,10 +200,9 @@ function displayEditionDetails(edition) {
 
 function adaugaJucatorInList(matchInfo, numar_goluri, nume, culoare, nr_meci) {
   var listClassName = "list-" + culoare;
-
-  var list = document.querySelector(
-    "#match" + nr_meci + " ul." + listClassName
-  );
+  const list = matchInfo.querySelector(`ul.${listClassName}`)
+  console.log(matchInfo)
+  console.log(list)
 
   var echipaPlayer = culoare;
 
@@ -182,8 +246,8 @@ function adaugaJucatorInList(matchInfo, numar_goluri, nume, culoare, nr_meci) {
   }
 
   
-
-  list.appendChild(listItem);
+  if(list)
+    list.appendChild(listItem);
 }
 
 function updateScoreMatch() {
@@ -217,4 +281,5 @@ function updateScoreMatch() {
     script.populateGolgheteryTable();
     script.populateAutogolgheteriTable();
   }
+
 
