@@ -8,7 +8,6 @@ export const table = document.getElementById("teams");
 let addedPlayers = [];
 
 let devMode = false;
-
 // Function to populate the table with a player
 export function populateTable(value) {
   const table = document.getElementById("teams");
@@ -75,25 +74,34 @@ export function clearTable() {
   table.innerHTML = "";
 }
 
+const submitButton = document.getElementById("button_selectPlayer");
 
-export const submitButton = document.getElementById("button_selectPlayer");
-submitButton.addEventListener("click", function () {
-  const input = document.getElementById("input_selectPlayer");
-  const selectedValue = input.value;
+if (submitButton) {
+  console.log(`Butonul este prezent si devMode este ${devMode}`)
+  submitButton.addEventListener("click", function () {
+    devMode = document.getElementById("devModeSwitch").checked;
+    console.log(`Butonul este prezent si devMode este ${devMode}`)
+    try {
+      const input = document.getElementById("input_selectPlayer");
+      const selectedValue = input.value;
 
 
-  devMode = document.getElementById("devModeSwitch").checked;
 
-  if (devMode){
-    for(var i = 1; i <= 24 ; i++){
-      populateTableDevMode();
+      if (devMode) {
+        for (var i = 1; i <= 24; i++) {
+          populateTableDevMode();
+        }
+      } else {
+        populateTable(selectedValue);
+      }
+    } catch (error) {
+      // Gestionează eroarea aici, poți să o afișezi sau să faci alte acțiuni
+      console.error("A apărut o eroare:", error);
     }
-  }
-  else{
-    populateTable(selectedValue);
-  }
-
-});
+  });
+} else {
+  console.log("Elementul pentru butonul de submit nu a fost găsit pe pagină.");
+}
 
 
 

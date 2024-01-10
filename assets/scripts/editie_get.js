@@ -1,8 +1,15 @@
+import * as cls from "./clasament.js";
+import {clearTable} from "./table.js"
 import { countNonNullLi } from "./helpers.js";
+import * as script from "./script.js";
 
 // Get the edition number from the URL
 const urlParams = new URLSearchParams(window.location.search);
 const numar_editie = urlParams.get("id");
+
+cls.sortClasament();
+cls.buildClasament(cls.clasament);
+cls.sortClasament();
 
 // Load edition information using the edition number
 var xhttp = new XMLHttpRequest();
@@ -40,39 +47,58 @@ xhttp.onreadystatechange = function () {
     playerData.forEach(function (player) {
       if (player.stare_jucator === "Prezent")
         columns[player.culoare_echipa].push(player.nume_jucator);
-      else
+      else if (!marcatori[player.numar_meci]) {
+        // If the key doesn't exist, create it and set the value
         marcatori[
           player.numar_meci
         ] = `${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
+      } else {
+        // If the key exists, append the value to the existing one
+        marcatori[
+          player.numar_meci
+        ] += `, ${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
+      }
     });
 
     console.log(marcatori);
 
     for (const [key, values] of Object.entries(marcatori)) {
-      const info_marcator = values.split("_");
+      const info_meci = values.split(",");
+      // Filter players for match 1 and the green team
+      console.log(info_meci);
+
       var meci;
 
-      if (key <= 12) {
-        meci = document.getElementById(`match${key}`);
-        console.log(meci.querySelector(`ul.list-${info_marcator[2]}`));
-        for(var nr_goals = 1; nr_goals <= info_marcator[0];nr_goals++)
-            adaugaJucatorInList(meci,info_marcator[0],info_marcator[1],info_marcator[2],key)
-      } else if (key == 13) meci = document.getElementById(`finala-mica`)
-      else meci = document.getElementById(`finala-mare`);
-    }
+      info_meci.forEach((info_marcator) => {
+        info_marcator = info_marcator.split("_");
+        console.log(info_marcator);
 
+        if (key <= 12) {
+          meci = document.getElementById(`match${key}`);
+          console.log(meci.querySelector(`ul.list-${info_marcator[2]}`));
+          for (var nr_goals = 1; nr_goals <= info_marcator[0]; nr_goals++)
+            adaugaJucatorInList(
+              meci,
+              info_marcator[0],
+              info_marcator[1],
+              info_marcator[2],
+              key
+            );
+        } else if (key == 13) meci = document.getElementById(`finala-mica`);
+        else meci = document.getElementById(`finala-mare`);
+      });
+    }
     const matches = document.querySelectorAll(".match");
-    matches.forEach((match) => {
+  
+    matches.forEach((match) => {  
       const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
       const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
-  
+
       const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
       const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
-  
+
       const scoreElement = match.querySelector(".scor");
       scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
-  
-      //updateClasament(match);
     }, this);
 
     // Find the maximum length among columns
@@ -90,6 +116,8 @@ xhttp.onreadystatechange = function () {
       });
     }
   }
+
+  updateScoreMatch();
 };
 
 // Function to display the edition details
@@ -105,7 +133,7 @@ function displayEditionDetails(edition) {
   console.log(edition.data_editie, edition.numar_editie);
 }
 
-function adaugaJucatorInList(matchInfo,numar_goluri,nume,culoare, nr_meci) {
+function adaugaJucatorInList(matchInfo, numar_goluri, nume, culoare, nr_meci) {
   var listClassName = "list-" + culoare;
 
   var list = document.querySelector(
@@ -113,7 +141,6 @@ function adaugaJucatorInList(matchInfo,numar_goluri,nume,culoare, nr_meci) {
   );
 
   var echipaPlayer = culoare;
-
 
   var numeEchipaStanga = matchInfo.children[0].children[0].textContent.replace(
     /\s+/g,
@@ -154,5 +181,40 @@ function adaugaJucatorInList(matchInfo,numar_goluri,nume,culoare, nr_meci) {
     }
   }
 
-   list.appendChild(listItem);
+  
+
+  list.appendChild(listItem);
 }
+
+function updateScoreMatch() {
+    cls.resetClasamentValue();
+    clearTable();
+  
+    const matches = document.querySelectorAll(".match");
+    matches.forEach((match) => {
+      const leftTeamGoalsUl = match.querySelector(".left-team-info ul");
+      const rightTeamGoalsUl = match.querySelector(".right-team-info ul");
+  
+      const leftTeamGoalsCount = countNonNullLi(leftTeamGoalsUl);
+      const rightTeamGoalsCount = countNonNullLi(rightTeamGoalsUl);
+  
+      const scoreElement = match.querySelector(".scor");
+      scoreElement.textContent = `${leftTeamGoalsCount} - ${rightTeamGoalsCount}`;
+  
+      cls.updateClasament(match);
+    }, this);
+  
+    cls.sortClasament();
+    cls.buildClasament(cls.clasament);
+    cls.sortClasament();
+  
+    script.removeFinalsTeams();
+    script.addFinalsTeam(cls.clasament);
+  
+    script.removeTableRows("golgheteryBody");
+    script.removeTableRows("autogolgheteriBody");
+  
+    script.populateGolgheteryTable();
+    script.populateAutogolgheteriTable();
+  }
+
