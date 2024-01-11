@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Page</title>
+    <link rel="stylesheet" href="assets/style/css/style2.css" />
+    <style>
+        #colorFilter {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Optional: Style the option elements */
+        #colorFilter option {
+            font-size: 14px;
+        }
+
+        /* Optional: Style for better visibility on dark backgrounds */
+        body {
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        #addPlayerForm {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .deleteButton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.deleteButton::before {
+    content: "\1F5D1"; /* Codul Unicode pentru o pictogramă de coș de gunoi roșu */
+    font-size: 20px;
+    color: red;
+    margin-right: 5px; /* Spațiu între pictogramă și text, ajustează după nevoie */
+}
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Optional: Style for better visibility on dark backgrounds */
+        #noteazaPlayer {
+            display: none;
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+ol, ul {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+    </style>
+</head>
+
+<body>
+
+    <h2>Echipa la care ai fost</h2>
+    <select id="colorFilter">
+        <option value="all">Arata toti jucatorii</option>
+        <option value="orange">Portocaliu</option>
+        <option value="green">Verde</option>
+        <option value="blue">Albastru</option>
+        <option value="grey">Gri</option>
+    </select>
+
+    <table id="teams">
+        <tr>
+            <th>Portocaliu</th>
+            <th>Verde</th>
+            <th>Albastru</th>
+            <th>Gri</th>
+        </tr>
+
+    </table>
+
+    <br>
+    <ol>
+        <li>Dacă nu ești pe echipa ta, selectează în lista de mai sus.</li>
+        <li>Dă clic pe un jucător pentru a-l evalua.</li>
+        <li>Apasă pe butonul de notare a jucătorului și fă asta pentru toți ceilalți.</li>
+        <li>Trimite poza cu notările celui care ți-a trimis chestionarul.</li>
+    </ol>
+    
+    <br>
+
+    <form id="noteazaPlayer">
+        <!-- ... alte elemente existente ... -->
+        <label for="playerName">Name Jucator</label>
+        <input type="text" id="playerName" required>
+
+        <label for="pase">Pase și Altruism</label>
+        <select id="pase" name="pase">
+            <!-- Adaugă opțiunile pentru notele de la 1 la 10 -->
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected >5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    
+        <label for="suturi">Suturi și capacitatea de a marca</label>
+        <select id="suturi" name="suturi">
+            <!-- Adaugă opțiunile pentru notele de la 1 la 10 -->
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected>5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    
+        <label for="spirit">Spiriul de echipa și moralul în teren</label>
+        <select id="spirit" name="spirit">
+            <!-- Adaugă opțiunile pentru notele de la 1 la 10 -->
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected>5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    
+        <label for="dribling">Capacitatea de a dribla și a crea faze importante</label>
+        <select id="dribling" name="dribling">
+            <!-- Adaugă opțiunile pentru notele de la 1 la 10 -->
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected>5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    
+        <label for="aparare">Capacitatea de a se apăra și de a deposeda adversari</label>
+        <select id="aparare" name="aparare">
+            <!-- Adaugă opțiunile pentru notele de la 1 la 10 -->
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected >5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+    
+
+        <button type="button" onclick="notePlayer()">Noteaza Jucator</button>
+    </form>
+
+    <ul id="playerList"></ul>
+
+
+    <script>
+        // Your existing JavaScript code
+        const urlParams = new URLSearchParams(window.location.search);
+        const numar_editie = urlParams.get("id");
+        const culoare_echipa = urlParams.get("culoare_echipa")
+        const nume_jucator = urlParams.get("nume_jucator")
+        // Load edition information using the edition number
+        var xhttp = new XMLHttpRequest();
+        let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/editii/${numar_editie}`;
+        xhttp.open("GET", url, true);
+        xhttp.send(); 
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var result = JSON.parse(this.response);
+                console.log(result);
+                // Mapping of colors to class names for table cells
+                const playerData = result.items;
+
+
+                var colorClasses = {
+                    Portocaliu: "orange",
+                    Verde: "green",
+                    Albastru: "blue",
+                    Gri: "grey",
+                };
+
+                // Get the table element
+                var table = document.getElementById("teams");
+
+                // Initialize columns array
+                var columns = {};
+                Object.keys(colorClasses).forEach(function (color) {
+                    columns[color] = [];
+                });
+
+                const marcatori = {};
+                const marcatori_finale = {};
+
+                // Loop through the players and populate the columns
+                playerData.forEach(function (player) {
+                    if (player.stare_jucator === "Prezent") {
+                        columns[player.culoare_echipa].push(player.nume_jucator);
+                    } else {
+                        const targetMarcatori = player.numar_meci < 13 ? marcatori : marcatori_finale;
+                        const keyExists = targetMarcatori[player.numar_meci];
+
+                        if (!keyExists) {
+                            targetMarcatori[player.numar_meci] = `${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
+                        } else {
+                            targetMarcatori[player.numar_meci] += `, ${player.numar_goluri_marcate}_${player.nume_jucator}_${player.culoare_echipa}`;
+                        }
+                    }
+                });
+
+
+                console.log(marcatori);
+                console.log(marcatori_finale)
+
+
+
+                // Find the maximum length among columns
+                var maxLength = Math.max(
+                    ...Object.values(columns).map((arr) => arr.length)
+                );
+
+                // Populate the table using columns
+                for (var i = 0; i < maxLength; i++) {
+                    var row = table.insertRow(-1);
+                    Object.keys(columns).forEach(function (color) {
+                        var cell = row.insertCell(-1);
+                        cell.textContent = columns[color][i] || "";
+                        cell.className = colorClasses[color];
+                    });
+                }
+            }
+        }
+
+
+        // Add an event listener to the color filter select element
+        document.getElementById("colorFilter").addEventListener("change", function () {
+            filterTableByColor(this.value);
+        });
+
+        function filterTableByColor(selectedColor) {
+            var table = document.getElementById("teams");
+            var jucatoriVotare = []
+
+            // Iterate through table rows
+            for (var i = 0; i < table.rows.length; i++) {
+                var row = table.rows[i];
+
+                // Iterate through the cells of each row (both th and td)
+                for (var j = 0; j < row.cells.length; j++) {
+                    var cell = row.cells[j];
+                    console.log(cell);
+
+                    // Check if the cell has the selected color or if all colors are selected
+                    var isVisible = selectedColor === "all" || cell.className === selectedColor;
+                    if (isVisible) {
+                        jucatoriVotare.push(cell.textContent)
+                        cell.addEventListener("click", function () {
+                            clearForm();
+                            var playerNameInput = document.getElementById('playerName')
+                            playerNameInput.value = this.textContent;
+                            playerNameInput.disabled = true;
+                        })
+                    }
+
+                    // Make the cell visible only if the class name matches the selected color
+                    cell.style.display = isVisible ? "" : "none";
+
+                    // Output the class name for demonstration purposes
+                    console.log("Cell [" + i + "," + j + "]: " + cell.className);
+                }
+            }
+
+            document.getElementById("noteazaPlayer").style.display = "block";
+
+            console.log(jucatoriVotare)
+        }
+
+        function notePlayer() {
+            var playerNameInput = document.getElementById('playerName');
+            var playerName = playerNameInput.value.trim();
+
+            if (playerName !== '') {
+                var playerList = document.getElementById('playerList');
+
+                // Create a new list item for the player
+                var playerItem = document.createElement('li');
+                playerItem.className = 'player';
+
+                // Display player name
+                const nota = calculeazaNota();
+
+                playerItem.innerHTML = playerName + ' ' + nota + ' ';
+
+
+
+
+                // Add a delete button
+                var deleteButton = document.createElement('button');
+                deleteButton.className = 'deleteButton';
+                deleteButton.innerHTML = 'Delete';
+                deleteButton.onclick = function () {
+                    playerList.removeChild(playerItem);
+                };
+
+
+                playerItem.appendChild(deleteButton);
+
+                // Add the player item to the list
+                playerList.appendChild(playerItem);
+
+                // Clear the input field
+                playerNameInput.value = '';
+            }
+        }
+
+        function clearForm() {
+            // Assuming you have declared playerNameInput and other input fields globally
+            var playerNameInput = document.getElementById('playerName');
+            var paseInput = document.getElementById('pase');
+            var suturiInput = document.getElementById('suturi');
+            var goluriInput = document.getElementById('spirit');
+            var vitezaInput = document.getElementById('dribling');
+            var tehnicaInput = document.getElementById('aparare');
+
+            // Reset the values of the input fields
+            playerNameInput.value = '';
+            paseInput.value = '5';
+            suturiInput.value = '5';
+            goluriInput.value = '5';
+            vitezaInput.value = '5';
+            tehnicaInput.value = '5';
+
+            // Enable the playerNameInput field if needed
+            playerNameInput.disabled = false;
+        }
+        
+
+        function calculeazaNota() {
+        // Obține elementele select pentru fiecare categorie
+        var paseSelect = document.getElementById("pase");
+        var suturiSelect = document.getElementById("suturi");
+        var spiritSelect = document.getElementById("spirit");
+        var driblingSelect = document.getElementById("dribling");
+        var aparareSelect = document.getElementById("aparare");
+
+        // Calculează media notelor
+        var total = (
+            parseInt(paseSelect.value) +
+            parseInt(suturiSelect.value) +
+            parseInt(spiritSelect.value) +
+            parseInt(driblingSelect.value) +
+            parseInt(aparareSelect.value)
+        );
+
+        // Calculează media
+        var average = total / 5;
+
+        return average.toFixed(2);
+
+        // Afișează media în consolă sau poți face altceva cu ea (afisare pe pagină, trimitere la server, etc.)
+        console.log("Media notelor: " + average.toFixed(2));
+    }
+
+    </script>
+
+</body>
+
+</html>

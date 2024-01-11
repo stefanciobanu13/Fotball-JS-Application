@@ -44,11 +44,13 @@ xhttp.onreadystatechange = function () {
 
     const marcatori = {};
     const marcatori_finale = {};
+    const links = []
 
     // Loop through the players and populate the columns
     playerData.forEach(function (player) {
         if (player.stare_jucator === "Prezent") {
           columns[player.culoare_echipa].push(player.nume_jucator);
+          console.log(colorClasses[player.culoare_echipa],player.nume_jucator)
         } else {
           const targetMarcatori = player.numar_meci < 13 ? marcatori : marcatori_finale;
           const keyExists = targetMarcatori[player.numar_meci];
@@ -194,6 +196,9 @@ function displayEditionDetails(edition) {
   var nr_editie = document.getElementById("numar_editie");
   nr_editie.value = edition.numar_editie;
   nr_editie.disabled = true;
+
+  const noteazaJucatori = document.getElementById("noteaza-jucatori")
+  noteazaJucatori.href = "noteaza_jucatori.htm?id="+edition.numar_editie;
 
   console.log(edition.data_editie, edition.numar_editie);
 }
