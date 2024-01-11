@@ -20,10 +20,7 @@
         }
 
         /* Optional: Style for better visibility on dark backgrounds */
-        body {
-            background-color: #f0f0f0;
-            padding: 20px;
-        }
+
 
         #addPlayerForm {
             max-width: 400px;
@@ -73,10 +70,7 @@
             display: none;
         }
 
-        body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
+ 
 
 ol, ul {
     margin-bottom: 20px;
@@ -87,11 +81,107 @@ li {
     margin-bottom: 8px;
 }
     </style>
+
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+rel="stylesheet"
+integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+crossorigin="anonymous"
+/>
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+/>
+
+<link rel="stylesheet" href="assets/style/css/style2.css" />
 </head>
 
-<body>
+<body>   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
 
-    <h2>Echipa la care ai fost</h2>
+    <script src="assets/scripts/clasament.js" type="module"></script>
+    <script src="assets/scripts/helpers.js" type="module"></script>
+    <script src="assets/scripts/match.js" type="module"></script>
+    <script src="assets/scripts/golgheteri.js" type="module"></script>
+    <script src="assets/scripts/editie_get.js" type="module"></script>
+
+
+    <nav
+      class="navbar bg-dark border-bottom border-bottom-dark"
+      data-bs-theme="dark"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Adauga etapa</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="adauga-jucatori.htm"
+                >Adauga Jucatori</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="editii.htm"
+                >Editii</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="jucatori.htm"
+                >Jucatori</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="informatii-editie">
+      <h1>Informatii editie</h1>
+      <form
+        class="form-control"
+        id="myForm"
+      >
+        <div class="row">
+          <div class="col-auto">
+            <label for="data_editie">Data editie</label>
+            <input
+              type="date"
+              class="form-control"
+              id="data_editie"
+              name="data_editie"
+            />
+          </div>
+          <div class="col-auto">
+            <label for="numar_editie">Numarul editie</label>
+            <input
+              type="number"
+              class="form-control"
+              id="numar_editie"
+              name="numar_editie"
+            />
+          </div>
+  
+        </div>
+      </form>
+    </div>
+
+    <h1>Noteaza jucator</h1>
     <select id="colorFilter">
         <option value="all">Arata toti jucatorii</option>
         <option value="orange">Portocaliu</option>
@@ -289,6 +379,9 @@ li {
         document.getElementById("colorFilter").addEventListener("change", function () {
             filterTableByColor(this.value);
         });
+
+        if(culoare_echipa)
+            document.getElementById("colorFilter").value = culoare_echipa;
 
         function filterTableByColor(selectedColor) {
             var table = document.getElementById("teams");

@@ -44,13 +44,15 @@ xhttp.onreadystatechange = function () {
 
     const marcatori = {};
     const marcatori_finale = {};
-    const links = []
+    const links = [];
 
     // Loop through the players and populate the columns
     playerData.forEach(function (player) {
         if (player.stare_jucator === "Prezent") {
           columns[player.culoare_echipa].push(player.nume_jucator);
           console.log(colorClasses[player.culoare_echipa],player.nume_jucator)
+
+          links.push(`https://cezarovici.github.io/noteaza_jucatori.htm?id=${numar_editie}&culoare_echipa=${colorClasses[player.culoare_echipa]}&nume_jucator=${player.nume_jucator.replace(' ','_')}`)
         } else {
           const targetMarcatori = player.numar_meci < 13 ? marcatori : marcatori_finale;
           const keyExists = targetMarcatori[player.numar_meci];
@@ -63,6 +65,7 @@ xhttp.onreadystatechange = function () {
         }
     });
       
+    addElementsToUl(links,'noteaza_jucatori')
 
     console.log(marcatori);
     console.log(marcatori_finale)
@@ -197,9 +200,6 @@ function displayEditionDetails(edition) {
   nr_editie.value = edition.numar_editie;
   nr_editie.disabled = true;
 
-  const noteazaJucatori = document.getElementById("noteaza-jucatori")
-  noteazaJucatori.href = "noteaza_jucatori.htm?id="+edition.numar_editie;
-
   console.log(edition.data_editie, edition.numar_editie);
 }
 
@@ -286,5 +286,42 @@ function updateScoreMatch() {
     script.populateGolgheteryTable();
     script.populateAutogolgheteriTable();
   }
+
+
+  function addElementsToUl(elements, ulId) {
+    var ul = document.getElementById(ulId);
+
+    // Verifică dacă UL există înainte de a adăuga elementele
+    if (ul) {
+        elements.forEach(function(element) {
+            var li = document.createElement('li');
+            li.textContent = element;
+            ul.appendChild(li);
+        });
+    } else {
+        console.error("UL element not found with the specified ID.");
+    }
+}
+
+var copyButton = document.getElementById("copy");
+copyButton.addEventListener("click", copyListToClipboard);
+
+
+function copyListToClipboard() {
+  var ul = document.getElementById("noteaza_jucatori");
+  var textToCopy = Array.from(ul.getElementsByTagName("li")).map(li => li.textContent).join('\n');
+
+  // Creează un element de text pentru a copia în clipboard
+  var textArea = document.createElement("textarea");
+  textArea.value = textToCopy;
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textArea);
+
+  console.log(textToCopy)
+
+  alert("List copied to clipboard!");
+}
 
 
