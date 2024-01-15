@@ -12,6 +12,13 @@ cls.sortClasament();
 cls.buildClasament(cls.clasament);
 cls.sortClasament();
 
+const colorClasses = {
+  Portocaliu: "orange",
+  Verde: "green",
+  Albastru: "blue",
+  Gri: "grey",
+};
+
 // Load edition information using the edition number
 var xhttp = new XMLHttpRequest();
 let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/editii/${numar_editie}`;
@@ -26,25 +33,26 @@ xhttp.onreadystatechange = function () {
 
     displayEditionDetails(playerData[0]);
 
-    var colorClasses = {
-      Portocaliu: "orange",
-      Verde: "green",
-      Albastru: "blue",
-      Gri: "grey",
-    };
+  
 
     // Get the table element
     var table = document.getElementById("teams");
-
+    const links = {};
     // Initialize columns array
     var columns = {};
     Object.keys(colorClasses).forEach(function (color) {
       columns[color] = [];
+      console.log(color)
+      links[color] = (`https://cezarovici.github.io/noteaza_jucatori.htm?id=${numar_editie}&culoare_echipa=${colorClasses[color]}`)
     });
+
+    console.log(links)
+
+//<a href="https://www.w3schools.com">Visit W3Schools</a>
 
     const marcatori = {};
     const marcatori_finale = {};
-    const links = [];
+  
 
     // Loop through the players and populate the columns
     playerData.forEach(function (player) {
@@ -52,7 +60,6 @@ xhttp.onreadystatechange = function () {
           columns[player.culoare_echipa].push(player.nume_jucator);
           console.log(colorClasses[player.culoare_echipa],player.nume_jucator)
 
-          links.push(`https://cezarovici.github.io/noteaza_jucatori.htm?id=${numar_editie}&culoare_echipa=${colorClasses[player.culoare_echipa]}&nume_jucator=${player.nume_jucator.replace(' ','_')}`)
         } else {
           const targetMarcatori = player.numar_meci < 13 ? marcatori : marcatori_finale;
           const keyExists = targetMarcatori[player.numar_meci];
@@ -287,41 +294,35 @@ function updateScoreMatch() {
     script.populateAutogolgheteriTable();
   }
 
+  
 
+  /**
+   * 
+   * @param {Object.<string,string>} elements 
+   * @param {string} ulId 
+   */
   function addElementsToUl(elements, ulId) {
     var ul = document.getElementById(ulId);
 
     // Verifică dacă UL există înainte de a adăuga elementele
+    
     if (ul) {
-        elements.forEach(function(element) {
-            var li = document.createElement('li');
-            li.textContent = element;
-            ul.appendChild(li);
+        Object.entries(elements).forEach(function([color,link]) {
+            const a = document.createElement("a");
+            a.classList.add("list-group-item")
+            a.classList.add(colorClasses[color])
+
+            
+            a.textContent = `Evalueaza jucatorii de la echipa ${color}`;
+            a.href = link;
+
+            ul.appendChild(a);
         });
     } else {
         console.error("UL element not found with the specified ID.");
     }
 }
 
-var copyButton = document.getElementById("copy");
-copyButton.addEventListener("click", copyListToClipboard);
 
-
-function copyListToClipboard() {
-  var ul = document.getElementById("noteaza_jucatori");
-  var textToCopy = Array.from(ul.getElementsByTagName("li")).map(li => li.textContent).join('\n');
-
-  // Creează un element de text pentru a copia în clipboard
-  var textArea = document.createElement("textarea");
-  textArea.value = textToCopy;
-  document.body.appendChild(textArea);
-  textArea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textArea);
-
-  console.log(textToCopy)
-
-  alert("List copied to clipboard!");
-}
 
 

@@ -616,7 +616,7 @@ function calculateAutogoals(names) {
   return occurrencesVector;
 }
 
-function createDataPlayerName() {
+export function createDataPlayerName() {
   var data12 = [];
   for (var i = 0; i < dataPlayer.length; i++) {
     var matchData = dataPlayer[i];
