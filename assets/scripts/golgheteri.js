@@ -3,10 +3,12 @@ export var marcatori = [];
 
 export async function buildGolgheteri() {
   var table = document.getElementById("golgheteryBody");
-  const players = document.querySelectorAll("li");
+  var turneu = document.getElementById("turneu")
+  const players = turneu.querySelectorAll("li");
 
   players.forEach((player) => {
-    if (player.textContent != "" || player.textContent != "Jucatori") {
+    if (player.textContent != "" || player.textContent !== "Jucatori") {
+      console.log(player.textContent, player.className.trim())
       marcatori.push(player.textContent);
     }
   });

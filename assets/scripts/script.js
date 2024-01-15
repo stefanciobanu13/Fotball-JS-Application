@@ -6,6 +6,7 @@ import {
   buildClasament,
   updateClasament,
 } from "./clasament.js";
+import { buildGolgheteri } from "./golgheteri.js";
 
 import { countNonNullLi, removeDeleteButtons } from "./helpers.js";
 import { table, clearTable } from "./table.js";
@@ -444,6 +445,7 @@ export function removeTableRows(tableId) {
   }
 }
 
+
 function addGoalScorerRows(names, finalGoals, total) {
   const tableBody = document.getElementById("golgheteryBody");
 
@@ -452,16 +454,17 @@ function addGoalScorerRows(names, finalGoals, total) {
     .map((name, index) => ({ name, finalGoals: finalGoals[index], total: total[index] }))
     .filter((data) => data.total > 0 && data.name.trim() !== "");
 
+    console.log(filteredData)
+
   // Sort filtered data in descending order based on the 'total' value
-  const sortedData = filteredData.sort((a, b) => {
-    const aCount = names.filter((name) => name === a.name).length;
-    const bCount = names.filter((name) => name === b.name).length;
+  const sortedData = filteredData.sort((p1, p2) => {
+    return  p1.total === p2.total 
+    ? p1.finalGoals === p2.finalGoals ? 0 : p1.finalGoals > p2.finalGoals ? -1 : 1
+    : p1.total > p2.total ? -1 : 1;
 
-    const aFinalCount = finalGoals.filter((goal) => goal === a.finalGoals).length;
-    const bFinalCount = finalGoals.filter((goal) => goal === b.finalGoals).length;
-
-    return aCount === bCount ? (aFinalCount === bFinalCount ? 0 : aFinalCount > bFinalCount ? 1 : -1) : bCount - aCount;
   });
+
+  console.log(sortedData)
 
   // Clear the existing table rows
   tableBody.innerHTML = "";
@@ -631,6 +634,7 @@ export function populateGolgheteryTable() {
   var dataPlayerEtapeFinala = calculateTotalEtapeFinala(dataPlayerName);
 
   addGoalScorerRows(dataPlayerName, dataPlayerFInala, dataPlayerEtapeFinala);
+
 }
 
 export function populateAutogolgheteriTable() {
