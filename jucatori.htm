@@ -105,6 +105,10 @@
     <div id="display_id"></div>
    <!-- Codul HTML existent -->
 
+
+
+   
+
 <script>
     var xhttp = new XMLHttpRequest();
     let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
@@ -121,14 +125,15 @@
     var displayDiv = document.getElementById("display_id");
     data = data.items;
 
-    var table = "<table class='table' id='dataTable'><thead><tr><th>Nume</th><th>Prenume</th><th>Email</th><td>Detalii</td></tr></thead><tbody>";
+    var table = "<table class='table' id='dataTable'><thead><tr><th>Nume</th><th>Prenume</th></th><th>Prezente</th><th>Numar Goluri</th><td>Detalii</td></tr></thead><tbody>";
 
     for (var i = 0; i < data.length; i++) {
         table += "<tr>";
         table += "<td>" + data[i].nume + "</td>";
         table += "<td>" + data[i].prenume + "</td>";
-        table += "<td>" + (data[i].email ? data[i].email : "Fara email inca") + "</td>";
         // Add the link as the last cell in the row
+        table += "<td>" + data[i].prezente + "</td>"
+        table += "<td>" + data[i].numar_goluri + "</td>"
         table += "<td><a href='jucator.htm?id=" + data[i].jucator_id + "'>View Details</a></td>";
         table += "</tr>";
     }
