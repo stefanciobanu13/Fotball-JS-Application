@@ -1,8 +1,23 @@
+import { jucatori2 } from "../scripts/app2.js";
+
+const jucatori = jucatori2
+
 export const table = document.getElementById("teams");
 
+// Create an array to store the added players
+let addedPlayers = [];
+
+let devMode = false;
+// Function to populate the table with a player
 export function populateTable(value) {
   const table = document.getElementById("teams");
   const emptyPosition = findFirstEmptyPosition();
+
+  // Check if the player is already added
+  if (addedPlayers.includes(value)) {
+    //alert('Jucatorul exista deja in lista de prezenta');
+    return;
+  }
 
   if (emptyPosition) {
     const { row, column } = emptyPosition;
@@ -11,23 +26,84 @@ export function populateTable(value) {
     const deleteIcon = document.createElement("i");
     deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
 
+    deleteIcon.addEventListener("click", function () {
+      cell.innerHTML = "";
+      // Remove the player from the array when deleted from the table
+      const index = addedPlayers.indexOf(value);
+      if (index > -1) {
+        addedPlayers.splice(index, 1);
+      }
+    });
+
     cell.innerHTML = "";
     cell.textContent = value;
+
     cell.appendChild(deleteIcon);
+
+    document.getElementById("input_selectPlayer").focus();
+    document.getElementById("input_selectPlayer").value = '';
+
+    // Add the player to the array
+    addedPlayers.push(value);
   }
 }
+
+// Function to populate the table with a random player in dev mode
+export function populateTableDevMode() {
+  if (devMode) {
+    // Replace this with your logic to fetch random players from the database
+    const randomPlayer = getRandomPlayerFromDatabase();
+    populateTable(randomPlayer);
+  } else {
+    if(!devMode)
+      alert('Dev mod is not enabled')
+  }
+}
+
+// Function to get a random player from the database (replace this with your logic)
+function getRandomPlayerFromDatabase() {
+  // Replace this with your logic to fetch a random player from the database
+  const randomPlayers = jucatori // Sample players
+  const randomIndex = Math.floor(Math.random() * randomPlayers.length);
+  return randomPlayers[randomIndex];
+}
+
 
 export function clearTable() {
   var table = document.getElementById("clasamentBody");
   table.innerHTML = "";
 }
 
-export const submitButton = document.getElementById("button_selectPlayer");
-submitButton.addEventListener("click", function () {
-  const input = document.getElementById("input_selectPlayer");
-  const selectedValue = input.value;
-  populateTable(selectedValue);
-});
+const submitButton = document.getElementById("button_selectPlayer");
+
+if (submitButton) {
+  console.log(`Butonul este prezent si devMode este ${devMode}`)
+  submitButton.addEventListener("click", function () {
+    devMode = document.getElementById("devModeSwitch").checked;
+    console.log(`Butonul este prezent si devMode este ${devMode}`)
+    try {
+      const input = document.getElementById("input_selectPlayer");
+      const selectedValue = input.value;
+
+
+
+      if (devMode) {
+        for (var i = 1; i <= 24; i++) {
+          populateTableDevMode();
+        }
+      } else {
+        populateTable(selectedValue);
+      }
+    } catch (error) {
+      // Gestionează eroarea aici, poți să o afișezi sau să faci alte acțiuni
+      console.error("A apărut o eroare:", error);
+    }
+  });
+} else {
+  console.log("Elementul pentru butonul de submit nu a fost găsit pe pagină.");
+}
+
+
 
 export function checkTableContent() {
   const table = document.getElementById("teams");

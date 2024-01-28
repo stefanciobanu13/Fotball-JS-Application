@@ -1,3 +1,4 @@
+import { getPlayers } from "./app2.js";
 import {
   clasament,
   resetClasamentValue,
@@ -5,16 +6,21 @@ import {
   buildClasament,
   updateClasament,
 } from "./clasament.js";
+import { buildGolgheteri } from "./golgheteri.js";
 
 import { countNonNullLi, removeDeleteButtons } from "./helpers.js";
 import { table, clearTable } from "./table.js";
+
+export let url = `https://iacademy2.oracle.com/ords/footballapp/psbd/jucatori/`;
+
+getPlayers();
 
 sortClasament();
 buildClasament(clasament);
 sortClasament();
 
 var addedDivs = [];
-function addFinalsTeam(clasament) {
+export function addFinalsTeam(clasament) {
   var finalaMica = document.getElementById("finala-mica");
   var finalaMare = document.getElementById("finala-mare");
 
@@ -86,44 +92,44 @@ function addFinalsTeam(clasament) {
   addedDivs.push(numeEchipaStangaFinalaMare);
   addedDivs.push(numeEchipaDreaptaFinalaMare);
 
+  addedDivs.push(ulEchipaStangaFinalaMica);
+  addedDivs.push(ulEchipaDreaptaFinalaMica);
+  addedDivs.push(ulEchipaStangaFinalaMare);
+  addedDivs.push(ulEchipaDreaptaFinalaMare);
+
   ulFinaaMicaEchipaStangaPlace.appendChild(ulEchipaStangaFinalaMica);
   ulFinaaMicaEchipaDreaptaPlace.appendChild(ulEchipaDreaptaFinalaMica);
   ulFinalaMareEchipaStangaPlace.appendChild(ulEchipaStangaFinalaMare);
   ulFinalaMareEchipaDreaptaPlace.appendChild(ulEchipaDreaptaFinalaMare);
 }
 
-// Add event listener to delete-button
-table.addEventListener("click", function (event) {
-  if (event.target.classList.contains("delete-button")) {
-    const cell = event.target.parentNode;
-    removeValue(cell);
-  }
-});
-
 //screen the table data
 export const dataPlayer = [];
 
 const getDataButton = document.getElementById("getDataButton");
-getDataButton.addEventListener("click", function () {
-  const rows = table.getElementsByTagName("tr");
-  const columns = table.getElementsByTagName("th");
+if (getDataButton)
+  getDataButton.addEventListener("click", function () {
+    const rows = table.getElementsByTagName("tr");
+    const columns = table.getElementsByTagName("th");
 
-  for (let i = 1; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName("td");
-    const rowData = {};
+    for (let i = 1; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      const rowData = {};
 
-    for (let j = 0; j < cells.length; j++) {
-      const columnName = columns[j].innerText.trim();
-      const cellContent = cells[j].innerText.trim();
-      rowData[columnName] = cellContent;
+      for (let j = 0; j < cells.length; j++) {
+        const columnName = columns[j].innerText.trim();
+        const cellContent = cells[j].innerText.trim();
+        rowData[columnName] = cellContent;
+      }
+
+      dataPlayer.push(rowData);
     }
 
-    dataPlayer.push(rowData);
-  }
+    console.log(dataPlayer);
 
-  getDataButton.remove();
-  removeDeleteButtons();
-});
+    getDataButton.remove();
+    removeDeleteButtons();
+  });
 
 // afisare recomandari
 function afiseazaRecomandari(etapa, searchTerm) {
@@ -152,39 +158,27 @@ function afiseazaRecomandari(etapa, searchTerm) {
 }
 
 function parseButtons() {
-  document.getElementById("button1").addEventListener("click", function () {
-    addValueToList(1);
-  });
+  for (let i = 1; i <= 7; i++) {
+    const button = document.getElementById(`button${i}`);
+    if (button) {
+      button.addEventListener("click", function () {
+        addValueToList(i);
+      });
+    }
 
-  document.getElementById("button2").addEventListener("click", function () {
-    addValueToList(2);
-  });
-
-  document.getElementById("button3").addEventListener("click", function () {
-    addValueToList(3);
-  });
-
-  document.getElementById("button4").addEventListener("click", function () {
-    addValueToList(4);
-  });
-
-  document.getElementById("button5").addEventListener("click", function () {
-    addValueToList(5);
-  });
-
-  document.getElementById("button6").addEventListener("click", function () {
-    addValueToList(6);
-  });
-
-  document.getElementById("button7").addEventListener("click", function () {
-    addValueToList(7);
-  });
+    const autoButton = document.getElementById(`buttonAuto${i}`);
+    if (autoButton) {
+      autoButton.addEventListener("click", function () {
+        addValueToList2(i);
+      });
+    }
+  }
 }
 
 parseButtons();
 
 // functie care va fii utilizata pentru actualizarea scorului fiecarui meci
-function updateScoreMatch(etapa) {
+export function updateScoreMatch() {
   resetClasamentValue();
   clearTable();
 
@@ -216,6 +210,7 @@ function updateScoreMatch(etapa) {
   populateAutogolgheteriTable();
 }
 
+// aceasta adauga jucatorul la echipa din selectie
 function addValueToList(etapa) {
   var searchValue;
   var selectElement;
@@ -328,7 +323,66 @@ function addValueToList(etapa) {
   }
 }
 
-function updateFinals() {
+// Aceasta functie adauga jucatorul la echipa sa
+function addValueToList2(etapa) {
+  var searchValue;
+  switch (etapa) {
+    case 1:
+      searchValue = document.getElementById("searchInput1").value;
+      break;
+    case 2:
+      searchValue = document.getElementById("searchInput2").value;
+      break;
+    case 3:
+      searchValue = document.getElementById("searchInput3").value;
+      break;
+    case 4:
+      searchValue = document.getElementById("searchInput4").value;
+      break;
+    case 5:
+      searchValue = document.getElementById("searchInput5").value;
+      break;
+    case 6:
+      searchValue = document.getElementById("searchInput6").value;
+      break;
+    case 7:
+      searchValue = document.getElementById("searchInput7").value;
+      break;
+  }
+
+  // search value in dataPlayer
+  for (var i = 0; i < dataPlayer.length; i++) {
+    var matchData = dataPlayer[i];
+    for (var key in matchData) {
+      if (matchData[key] === searchValue) {
+        var listClassName = "list-" + key;
+        var list = document.querySelector(
+          "#etapa" + etapa + " ul." + listClassName
+        );
+
+        // lista are 5 elemente?
+
+        var listItem = document.createElement("li");
+        listItem.textContent = searchValue;
+
+        // delete button
+        const deleteIcon = document.createElement("i");
+        deleteIcon.classList.add("fas", "fa-trash-alt", "delete-button");
+
+        // delete button listener + update score
+        deleteIcon.addEventListener("click", function () {
+          list.removeChild(listItem);
+          updateScoreMatch(etapa);
+        });
+        listItem.appendChild(deleteIcon);
+        list.appendChild(listItem);
+        updateScoreMatch(etapa);
+      }
+    }
+  }
+}
+
+export  async function updateFinals() {
   const finale = document.querySelectorAll(".finala");
   finale.forEach((finala) => {
     const leftTeamGoalsUl = finala.querySelector(".left-team-info ul");
@@ -366,10 +420,13 @@ function attachInputEvent(etapa) {
 }
 
 for (var etapa = 1; etapa <= 7; etapa++) {
-  attachInputEvent(etapa);
+  var searchInput = document.getElementById("searchInput" + etapa);
+  
+  if(searchInput)
+    attachInputEvent(etapa);
 }
 
-function removeFinalsTeams() {
+export function removeFinalsTeams() {
   for (var i = 0; i < addedDivs.length; i++) {
     var div = addedDivs[i];
     div.parentNode.removeChild(div);
@@ -377,7 +434,7 @@ function removeFinalsTeams() {
   addedDivs = [];
 }
 
-function removeTableRows(tableId) {
+export function removeTableRows(tableId) {
   var table = document.getElementById(tableId);
   if (table) {
     var rows = table.getElementsByTagName("tr");
@@ -388,35 +445,43 @@ function removeTableRows(tableId) {
   }
 }
 
+
 function addGoalScorerRows(names, finalGoals, total) {
   const tableBody = document.getElementById("golgheteryBody");
 
-  tableBody.innerHTML = "";
-
-  // Filter out players with a total of 0
+  // Filter out players with a total of 0 and exclude the ones with empty names
   const filteredData = names
-    .map((name, index) => ({
-      name,
-      finalGoals: finalGoals[index],
-      total: total[index],
-    }))
-    .filter((data) => data.total > 0);
+    .map((name, index) => ({ name, finalGoals: finalGoals[index], total: total[index] }))
+    .filter((data) => data.total > 0 && data.name.trim() !== "");
+
+    console.log(filteredData)
 
   // Sort filtered data in descending order based on the 'total' value
-  const sortedData = filteredData.sort((a, b) => b.total - a.total);
+  const sortedData = filteredData.sort((p1, p2) => {
+    return  p1.total === p2.total 
+    ? p1.finalGoals === p2.finalGoals ? 0 : p1.finalGoals > p2.finalGoals ? -1 : 1
+    : p1.total > p2.total ? -1 : 1;
+
+  });
+
+  console.log(sortedData)
+
+  // Clear the existing table rows
+  tableBody.innerHTML = "";
 
   // Loop through the sorted data and add rows to the table
   sortedData.forEach((data, index) => {
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
-    <td>${index + 1}</td>
-    <td>${data.name}</td>
-    <td>${data.finalGoals}</td>
-    <td>${data.total}</td>
+      <td>${index + 1}</td>
+      <td>${data.name}</td>
+      <td>${data.finalGoals}</td>
+      <td>${data.total}</td>
     `;
     tableBody.appendChild(newRow);
   });
 }
+
 
 function addAutoGoalsScorers(names, total) {
   const tableBody = document.getElementById("autogolgheteriBody");
@@ -551,7 +616,7 @@ function calculateAutogoals(names) {
   return occurrencesVector;
 }
 
-function createDataPlayerName() {
+export function createDataPlayerName() {
   var data12 = [];
   for (var i = 0; i < dataPlayer.length; i++) {
     var matchData = dataPlayer[i];
@@ -563,15 +628,16 @@ function createDataPlayerName() {
   return data12;
 }
 
-function populateGolgheteryTable() {
+export function populateGolgheteryTable() {
   var dataPlayerName = createDataPlayerName();
   var dataPlayerFInala = calculateTotalFinala(dataPlayerName);
   var dataPlayerEtapeFinala = calculateTotalEtapeFinala(dataPlayerName);
 
   addGoalScorerRows(dataPlayerName, dataPlayerFInala, dataPlayerEtapeFinala);
+
 }
 
-function populateAutogolgheteriTable() {
+export function populateAutogolgheteriTable() {
   var dataPlayerName = createDataPlayerName();
   var dataPlayerEtapeFinala = calculateAutogoals(dataPlayerName);
 

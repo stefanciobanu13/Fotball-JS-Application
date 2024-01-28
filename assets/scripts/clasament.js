@@ -1,5 +1,6 @@
 import { getMatchInformations } from "./helpers.js";
 import { getBetterTeamByDirectMatch } from "./match.js";
+import { clearTable } from "./table.js";
 
 export let clasament = [
   {
@@ -136,14 +137,14 @@ export function buildClasament(data) {
 
 // sort the clasament array by points
 export function sortClasament() {
+  let penaltyOccurred = false;
+  let penaltyTeams = [];
+
   clasament.sort(function (team1, team2) {
     if (team1.punctaj == team2.punctaj) {
-      //console.log(team1,team2,getBetterTeamByDirectMatch(team1,team2));
-
       if (getBetterTeamByDirectMatch(team1, team2) == 0) {
         if (team1.golaveraj == team2.golaveraj) {
           if (team1.goluri_date == team2.goluri_date) {
-            // change table loc with the name PENALTY
             var clasament1 = document.getElementById("clasamentBody");
             var rows = clasament1.querySelectorAll("tr");
             rows.forEach((row) => {
@@ -156,6 +157,10 @@ export function sortClasament() {
                 row.children[0].style.color = "red";
               }
             }, this);
+            
+            penaltyOccurred = true;
+            penaltyTeams = [team1, team2];
+            
             return 0;
           } else if (team1.goluri_date > team2.goluri_date) {
             return -1;
@@ -176,6 +181,32 @@ export function sortClasament() {
       return 1;
     }
   });
+
+  if (penaltyOccurred) {
+    // Change order in the table when a penalty has occurred
+    var clasament1 = document.getElementById("clasamentBody");
+    var rows = clasament1.querySelectorAll("tr");
+
+    
+    // Add event listener to each row
+    rows.forEach((row, index) => {
+      row.addEventListener("click", function () {
+ 
+          // Swap positions in the table
+          const temp = penaltyTeams[1];
+          clasament[clasament.indexOf(penaltyTeams[0])] = temp;
+          clasament[index] = penaltyTeams[0];
+          
+
+          console.log(clasament)
+          // Rebuild the table
+          clearTable();
+          //sortClasament();
+          buildClasament(clasament);    
+          sortClasament();    
+      });
+    });
+  }
 }
 
 export function updateClasament(match) {
@@ -229,7 +260,7 @@ export function updateClasament(match) {
       }
     }
   } catch (error) {
-    console.error('An error occurred in updateClasament:', error.message);
+    console.log('An error occurred in updateClasament:', error.message);
   }
 }
 

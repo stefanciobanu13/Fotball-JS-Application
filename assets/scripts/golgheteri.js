@@ -1,18 +1,20 @@
 
 export var marcatori = [];
 
-export function buildGolgheteri() {
+export async function buildGolgheteri() {
   var table = document.getElementById("golgheteryBody");
-  const players = document.querySelectorAll("li");
+  var turneu = document.getElementById("turneu")
+  const players = turneu.querySelectorAll("li");
 
   players.forEach((player) => {
-    if (player.textContent != "") {
+    if (player.textContent != "" || player.textContent !== "Jucatori") {
+      console.log(player.textContent, player.className.trim())
       marcatori.push(player.textContent);
     }
   });
 
   // reduce the array to unique values
-  marcatoriUnici = marcatori.reduce(function (a, b) {
+  const marcatoriUnici = marcatori.reduce(function (a, b) {
     if (a.indexOf(b) < 0) a.push(b);
     return a;
   }, []);
@@ -26,38 +28,19 @@ export function buildGolgheteri() {
     }
   });
 
-  marcatoriUnici
-    .sort(function (marcator1, marcator2) {
-      if (
-        marcatori.filter((marcator) => marcator == marcator1).length ==
-        marcatori.filter((marcator) => marcator == marcator2).length
-      ) {
-        if (
-          marcatoriFinalaArray.filter((marcator3) => marcator3 == marcator1)
-            .length ==
-          marcatoriFinalaArray.filter((marcator3) => marcator3 == marcator2)
-            .length
-        ) {
-          return 0;
-        } else if (
-          marcatoriFinalaArray.filter((marcator3) => marcator3 == marcator1)
-            .length >
-          marcatoriFinalaArray.filter((marcator3) => marcator2 == marcator2)
-            .length
-        ) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else if (
-        marcatori.filter((marcator) => marcator == marcator1).length >
-        marcatori.filter((marcator) => marcator == marcator2).length
-      ) {
-        return -1;
-      } else {
-        return 1;
-      }
-    })
+  marcatoriUnici.sort((marcator1, marcator2) => {
+    const count1 = marcatori.filter((marcator) => marcator === marcator1).length;
+    const count2 = marcatori.filter((marcator) => marcator === marcator2).length;
+  
+    const finalaCount1 = marcatoriFinalaArray.filter((marcator) => marcator === marcator1).length;
+    const finalaCount2 = marcatoriFinalaArray.filter((marcator) => marcator === marcator2).length;
+  
+    if (count1 === count2) {
+      return finalaCount1 === finalaCount2 ? 0 : finalaCount1 > finalaCount2 ? -1 : 1;
+    } else {
+      return count1 > count2 ? -1 : 1;
+    }
+  })
     .forEach((marcator, index) => {
       var row = `<tr>
                     <td>${index + 1}</td>
