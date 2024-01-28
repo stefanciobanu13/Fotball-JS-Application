@@ -33,7 +33,7 @@ xhttp.onreadystatechange = function () {
 
     displayEditionDetails(playerData[0]);
 
-  
+    document.title = `Editia ${numar_editie}`
 
     // Get the table element
     var table = document.getElementById("teams");
